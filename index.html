@@ -18,6 +18,33 @@ a{color:inherit;text-decoration:none;}
 .wrap{max-width:1200px;margin:0 auto;padding:0 48px;}
 body.editing .ed{outline:1px dashed var(--accent);outline-offset:3px;border-radius:3px;}
 body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mail{outline:2px dashed var(--accent);outline-offset:3px;cursor:pointer;}
+body.editing .tile .res{opacity:1;}
+#sbar .sw{width:22px;height:22px;padding:0;border-radius:6px;border:1px solid rgba(255,255,255,.3);cursor:pointer;}
+.mark{border-bottom:2px dashed var(--accent);font-weight:600;}
+/* arrange mode */
+body.arrange .wrap>header,body.arrange .wrap>section{outline:1px dashed var(--faint);outline-offset:6px;border-radius:4px;position:relative;}
+.arrangectl{position:absolute;top:-14px;right:6px;z-index:50;display:flex;gap:4px;background:var(--ink);padding:4px 6px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.4);}
+.arrangectl button{font-family:var(--font);font-size:12px;font-weight:700;width:26px;height:26px;border-radius:6px;border:none;background:transparent;color:var(--bg);cursor:pointer;}
+.arrangectl button:hover{background:var(--accent);color:var(--onacc);}
+.arrangectl .sep{width:1px;background:rgba(255,255,255,.25);margin:2px 2px;}
+.aguide{position:fixed;top:0;bottom:0;width:1px;background:var(--accent);z-index:60;pointer-events:none;opacity:.7;}
+/* move & resize */
+body.moveedit .ed,body.moveedit .wf,body.moveedit .player,body.moveedit .stats,body.moveedit .work,body.moveedit .tile{cursor:move;}
+#selbox{display:none;position:fixed;z-index:900;border:1.5px solid var(--accent);pointer-events:none;box-sizing:border-box;}
+#selbox .mv{position:absolute;inset:0;pointer-events:auto;cursor:move;}
+#selbox .hd{position:absolute;width:12px;height:12px;background:var(--accent);border:2px solid #fff;border-radius:3px;pointer-events:auto;box-sizing:border-box;}
+#selbox .hd[data-h=nw]{left:-7px;top:-7px;cursor:nwse-resize;}
+#selbox .hd[data-h=n]{left:calc(50% - 6px);top:-7px;cursor:ns-resize;}
+#selbox .hd[data-h=ne]{right:-7px;top:-7px;cursor:nesw-resize;}
+#selbox .hd[data-h=e]{right:-7px;top:calc(50% - 6px);cursor:ew-resize;}
+#selbox .hd[data-h=se]{right:-7px;bottom:-7px;cursor:nwse-resize;}
+#selbox .hd[data-h=s]{left:calc(50% - 6px);bottom:-7px;cursor:ns-resize;}
+#selbox .hd[data-h=sw]{left:-7px;bottom:-7px;cursor:nesw-resize;}
+#selbox .hd[data-h=w]{left:-7px;top:calc(50% - 6px);cursor:ew-resize;}
+#selbox .rs{position:absolute;top:-32px;left:-1px;pointer-events:auto;font-family:var(--font);font-size:11px;font-weight:700;padding:4px 8px;border-radius:7px;border:none;background:var(--ink);color:var(--bg);cursor:pointer;}
+.gline{position:fixed;background:var(--accent);z-index:880;pointer-events:none;}
+.gline.v{width:1px;top:0;bottom:0;}
+.gline.h{height:1px;left:0;right:0;}
 
 /* TYPE ROLES — only 4 sizes, vary weight/colour */
 .t-xl{font-size:var(--xl);font-weight:800;letter-spacing:-.03em;line-height:1.04;}
@@ -42,7 +69,7 @@ body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mai
 .spot{position:relative;cursor:default;max-width:none;}
 .spot .base,.spot .lit{font-size:var(--xl);font-weight:800;letter-spacing:-.03em;line-height:1.04;}
 .spot .base{color:var(--spotbase);}
-.spot .lit{position:absolute;inset:0;color:var(--spotlit);clip-path:circle(0px at 50% 50%);}
+.spot .lit{position:absolute;inset:0;color:var(--spotlit);clip-path:circle(0px at 50% 50%);pointer-events:none;}
 .spot .lit em{font-style:normal;color:var(--accent);}
 .spot.touch .lit{clip-path:none;}
 .sub{color:var(--muted);margin-top:18px;max-width:60ch;line-height:1.6;}
@@ -78,7 +105,7 @@ body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mai
 .player .np .k{font-size:var(--sm);color:var(--accent);font-weight:600;}
 .player .np .ti{font-size:var(--md);font-weight:600;margin:4px 0 9px;}
 .player .np .bar{height:4px;width:220px;max-width:46vw;background:var(--line);border-radius:3px;overflow:hidden;}
-.player .np .bar span{display:block;height:100%;width:58%;background:var(--accent);}
+.player .np .bar span{display:block;height:100%;width:100%;background:var(--accent);}
 .tracks{margin-top:8px;}
 .tracks button{width:100%;text-align:left;font-family:var(--font);font-size:var(--md);color:var(--ink);background:none;border:none;border-top:1px solid var(--line);padding:12px 4px;cursor:pointer;display:flex;justify-content:space-between;font-weight:500;}
 .tracks button:hover{color:var(--accent);}
@@ -152,20 +179,30 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
 <!-- EDITOR -->
 <div id="ebar"><span class="l">Editor</span>
   <button class="eb" id="bEdit" onclick="toggleEdit()">✎ Edit text</button>
+  <button class="eb" id="bArrange" onclick="toggleArrange()">⤢ Arrange &amp; align</button>
+  <button class="eb" id="bMove" onclick="toggleMove()">✥ Move &amp; resize</button>
   <button class="eb" id="bLink" onclick="toggleLinkEdit()">🔗 Links &amp; thumbnails</button>
   <span class="l">Theme</span><button class="eb on" id="thD" onclick="setTheme('dark')">Charcoal</button><button class="eb" id="thL" onclick="setTheme('light')">Light</button>
   <span class="l">Font</span><select class="eb" onchange="setFont(this.value)"><option value='"Plus Jakarta Sans",sans-serif'>Jakarta</option><option value='"Hanken Grotesk",sans-serif'>Hanken</option><option value='"Archivo",sans-serif'>Archivo</option><option value='"Manrope",sans-serif'>Manrope</option></select>
   <button class="eb pri" onclick="openPub()">Publish ▸</button>
 </div>
-<div id="sbar"><span class="l">Selected text:</span>
-  <select onmousedown="event.preventDefault()" onchange="fmt('fontName',this.value)"><option value="">Font…</option><option value="Plus Jakarta Sans">Jakarta</option><option value="Hanken Grotesk">Hanken</option><option value="Archivo">Archivo</option><option value="Manrope">Manrope</option></select>
-  <input type="color" oninput="fmt('foreColor',this.value)">
+<div id="sbar"><span class="l">Selected:</span>
+  <select onmousedown="event.preventDefault()" onchange="setFontSel(this.value);this.selectedIndex=0">
+    <option value="">Font…</option><option value='"Plus Jakarta Sans",sans-serif'>Jakarta</option><option value='"Hanken Grotesk",sans-serif'>Hanken</option><option value='"Archivo",sans-serif'>Archivo</option><option value='"Manrope",sans-serif'>Manrope</option>
+  </select>
+  <select onmousedown="event.preventDefault()" onchange="setSizeSel(this.value);this.selectedIndex=0">
+    <option value="">Size…</option><option value="var(--xl)">Headline</option><option value="var(--lg)">Large</option><option value="var(--md)">Body</option><option value="var(--sm)">Label</option>
+  </select>
+  <span class="l">Colour:</span>
+  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--accent)')" style="background:var(--accent)" title="Accent"></button>
+  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--ink)')" style="background:var(--ink)" title="Ink"></button>
+  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--muted)')" style="background:var(--muted)" title="Muted"></button>
+  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--faint)')" style="background:var(--faint)" title="Faint"></button>
+  <input type="color" oninput="setColorSel(this.value)" title="Custom colour">
   <button onmousedown="event.preventDefault()" onclick="fmt('bold')" style="font-weight:800">B</button>
   <button onmousedown="event.preventDefault()" onclick="fmt('italic')" style="font-style:italic">i</button>
+  <button onmousedown="event.preventDefault()" onclick="highlightSel()" title="Highlight">✸ Highlight</button>
   <button onmousedown="event.preventDefault()" onclick="addLink()">🔗 Link</button>
-  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','2')">A−</button>
-  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','4')">A</button>
-  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','6')">A+</button>
 </div>
 <div id="pub"><div class="card"><h3>Publish to your live site</h3>
   <p>One-time: paste a GitHub fine-grained token (repo <b>Experiments</b>, Contents: Read &amp; write). Saved in this browser only.</p>
@@ -201,10 +238,10 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
       <div class="bars" id="wf"></div>
     </div>
     <div class="stats">
-      <div class="stat"><b data-to="4" data-suf="×">0</b><span class="ed">Instagram growth in 4 months</span></div>
-      <div class="stat"><b data-to="28" data-suf="%+">0</b><span class="ed">YouTube CTR lift in 3 months</span></div>
-      <div class="stat"><b data-to="700" data-suf="+">0</b><span class="ed">hours of content produced</span></div>
-      <div class="stat proof"><b data-to="500" data-suf="+">0</b><span class="ed">interviews conducted</span><span class="pop">Including the Indian Prime Minister, a Gujarat Chief Minister, and Bollywood A-listers.</span></div>
+      <div class="stat"><b class="num ed">4×</b><span class="ed">Instagram growth in 4 months</span></div>
+      <div class="stat"><b class="num ed">28%+</b><span class="ed">YouTube CTR lift in 3 months</span></div>
+      <div class="stat"><b class="num ed">700+</b><span class="ed">hours of content produced</span></div>
+      <div class="stat proof"><b class="num ed">500+</b><span class="ed">interviews conducted</span><span class="pop">Including the Indian Prime Minister, a Gujarat Chief Minister, and Bollywood A-listers.</span></div>
     </div>
     <div class="ctarow">
       <a class="cta ed" href="mailto:aarti.boriya@protonmail.com">Work with me →</a>
@@ -216,25 +253,25 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
     <div class="h2 ed">Now playing</div>
     <div class="player">
       <div class="art"><div class="eq"><i style="animation-delay:0s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.22s"></i></div></div>
-      <div class="np"><div class="k">▶ CURRENTLY</div><div class="ti" id="npTitle">Head of Content · upliance.ai</div><div class="bar"><span></span></div></div>
+      <div class="np"><div class="k ed">▶ CURRENTLY</div><div class="ti ed" id="npTitle">Head of Content · upliance.ai</div><div class="bar"><span></span></div></div>
     </div>
     <div class="tracks">
-      <button onclick="setNP(this,'Head of Content · upliance.ai')"><span>Head of Content · upliance.ai</span><span class="d">2024 – Present</span></button>
-      <button onclick="setNP(this,'Consultant · IIMA Ventures')"><span>Consultant · IIMA Ventures</span><span class="d">2025</span></button>
-      <button onclick="setNP(this,'Content &amp; Community · Criya (YC)')"><span>Content &amp; Community · Criya (YC)</span><span class="d">2023</span></button>
-      <button onclick="setNP(this,'Prime-time Host &amp; Producer · Radio City')"><span>Prime-time Host &amp; Producer · Radio City</span><span class="d">2015 – 2020</span></button>
+      <button onclick="setNP(this)"><span class="ed">Head of Content · upliance.ai</span><span class="d ed">2024 – Present</span></button>
+      <button onclick="setNP(this)"><span class="ed">Consultant · IIMA Ventures</span><span class="d ed">2025</span></button>
+      <button onclick="setNP(this)"><span class="ed">Content &amp; Community · Criya (YC)</span><span class="d ed">2023</span></button>
+      <button onclick="setNP(this)"><span class="ed">Prime-time Host &amp; Producer · Radio City</span><span class="d ed">2015 – 2020</span></button>
     </div>
   </section>
 
   <section class="sec">
     <div class="h2 ed">Selected work</div>
     <div class="work">
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b>4×</b><span>Instagram in 4 months</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b>~180</b><span>leaders convened</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g3"></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b>700+</b><span>hours of content</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b>EC</b><span>voter awareness, Gujarat</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b>28%+</b><span>YouTube CTR</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b>300K</b><span>audience reached daily</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b class="ed">4×</b><span class="ed">Instagram in 4 months</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b class="ed">~180</b><span class="ed">leaders convened</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g3"></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b class="ed">700+</b><span class="ed">hours of content</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b class="ed">EC</b><span class="ed">voter awareness, Gujarat</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b class="ed">28%+</b><span class="ed">YouTube CTR</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b class="ed">300K</b><span class="ed">audience reached daily</span></div></a>
     </div>
     <p class="note ed">↑ in edit mode, turn on “🔗 Links &amp; thumbnails”, then click a tile to set its image and link.</p>
   </section>
@@ -248,12 +285,12 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
   <section class="sec">
     <div class="h2 ed">Experience</div>
     <div class="acc">
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</div></div></div>
-      <div class="item open"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.<br><span class="res">Instagram 4× in 4 months · YouTube CTR +28%</span></div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.<br><span class="res">300K daily listeners · +15% year one</span></div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</div></div></div>
+      <div class="item open"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.<br><span class="res">Instagram 4× in 4 months · YouTube CTR +28%</span></div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.<br><span class="res">300K daily listeners · +15% year one</span></div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</div></div></div>
     </div>
   </section>
 
@@ -266,7 +303,9 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
 
 <script>
 /* spotlight */
-var spot=document.getElementById('spot'),lit=spot.querySelector('.lit');
+var spot=document.getElementById('spot'),lit=spot.querySelector('.lit'),base=spot.querySelector('.base');
+function syncLit(){lit.innerHTML=base.innerHTML;}
+base.addEventListener('input',syncLit);
 if(window.matchMedia&&window.matchMedia('(hover:none)').matches){spot.classList.add('touch');}
 else{spot.addEventListener('mousemove',function(e){var r=spot.getBoundingClientRect();lit.style.clipPath='circle(140px at '+(e.clientX-r.left)+'px '+(e.clientY-r.top)+'px)';});
 spot.addEventListener('mouseleave',function(){lit.style.clipPath='circle(0px at 50% 50%)';});}
@@ -280,12 +319,13 @@ function wfMove(e){var r=wf.getBoundingClientRect();var p=Math.min(1,Math.max(0,
   var idx=Math.min(career.length-1,Math.floor(p*career.length));document.getElementById('wfLab').innerHTML='<b>'+career[idx][0]+'</b> — '+career[idx][1];}
 wf.addEventListener('mousemove',wfMove);
 
-/* count up */
-function runCount(s){s.querySelectorAll('b[data-to]').forEach(function(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.to,suf=el.dataset.suf||'',pre=el.dataset.pre||'',v=0,st=Math.max(1,to/40);var t=setInterval(function(){v+=st;if(v>=to){v=to;clearInterval(t);}el.textContent=pre+Math.round(v)+suf;},22);});}
+/* count up — reads the final value from the (editable) text itself */
+function initCount(el){var txt=(el.textContent||'').trim();var m=txt.match(/^(\D*)(\d+)(\D*)$/);if(!m)return;var pre=m[1],num=+m[2],suf=m[3];var v=0,st=Math.max(1,num/40);el.textContent=pre+'0'+suf;var t=setInterval(function(){v+=st;if(v>=num){v=num;clearInterval(t);el.textContent=txt;return;}el.textContent=pre+Math.round(v)+suf;},22);}
+function runCount(s){s.querySelectorAll('.num').forEach(function(el){if(el.dataset.done)return;el.dataset.done=1;initCount(el);});}
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){runCount(en.target);io.unobserve(en.target);}});},{threshold:.3});io.observe(document.querySelector('.stats'));}else runCount(document.querySelector('.stats'));
 
-/* now playing */
-function setNP(btn,t){document.getElementById('npTitle').innerHTML=t;}
+/* now playing — reads the clicked track's title */
+function setNP(btn){document.getElementById('npTitle').innerHTML=btn.querySelector('span').innerHTML;}
 
 /* theme + font */
 function setTheme(t){document.body.classList.toggle('light',t==='light');document.getElementById('thD').classList.toggle('on',t==='dark');document.getElementById('thL').classList.toggle('on',t==='light');}
@@ -298,6 +338,31 @@ function toggleEdit(){var on=document.body.classList.toggle('editing');document.
 var savedRange=null;document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s&&s.rangeCount&&document.body.classList.contains('editing'))savedRange=s.getRangeAt(0).cloneRange();});
 function fmt(cmd,val){if(savedRange){var s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}try{document.execCommand('styleWithCSS',false,true);}catch(e){}document.execCommand(cmd,false,val||null);}
 function addLink(){var url=prompt('Link the selected text to (URL):','https://');if(url){fmt('createLink',url);}}
+/* wrap current selection in a styled span (for size/colour/font/highlight) */
+function wrapSel(styler){var sel=window.getSelection();if(savedRange){sel.removeAllRanges();sel.addRange(savedRange);}if(!sel.rangeCount)return;var range=sel.getRangeAt(0);if(range.collapsed)return;var span=document.createElement('span');styler(span);try{range.surroundContents(span);}catch(e){var frag=range.extractContents();span.appendChild(frag);range.insertNode(span);}sel.removeAllRanges();savedRange=null;}
+function setSizeSel(v){if(v)wrapSel(function(s){s.style.fontSize=v;});}
+function setColorSel(v){if(v)wrapSel(function(s){s.style.color=v;});}
+function setFontSel(v){if(v)wrapSel(function(s){s.style.fontFamily=v;});}
+function highlightSel(){wrapSel(function(s){s.className='mark';});}
+
+/* arrange & align mode */
+function toggleArrange(){var on=document.body.classList.toggle('arrange');document.getElementById('bArrange').classList.toggle('on',on);
+  document.querySelectorAll('.arrangectl').forEach(function(c){c.remove();});
+  if(on){document.querySelectorAll('.wrap>header,.wrap>section').forEach(function(blk){
+    var c=document.createElement('div');c.className='arrangectl';c.contentEditable='false';
+    c.innerHTML='<button title="Move up">↑</button><button title="Move down">↓</button><span class="sep"></span><button title="Align left">⬅</button><button title="Align centre">■</button><button title="Align right">➡</button>';
+    var bs=c.querySelectorAll('button');
+    bs[0].onclick=function(){var p=blk.previousElementSibling;if(p&&p.tagName!=='SCRIPT')blk.parentNode.insertBefore(blk,p);};
+    bs[1].onclick=function(){var n=blk.nextElementSibling;if(n)blk.parentNode.insertBefore(n,blk);};
+    bs[2].onclick=function(){applyAlign(blk,'left');};
+    bs[3].onclick=function(){applyAlign(blk,'center');};
+    bs[4].onclick=function(){applyAlign(blk,'right');};
+    blk.appendChild(c);
+  });}
+}
+function applyAlign(blk,al){blk.style.textAlign=al;var row=blk.querySelector('.ctarow');if(row){row.style.justifyContent=al==='left'?'flex-start':al==='right'?'flex-end':'center';}
+  /* brief guide flash */
+  var g=document.createElement('div');g.className='aguide';var r=blk.getBoundingClientRect();g.style.left=(al==='left'?r.left:al==='right'?r.right:(r.left+r.right)/2)+'px';document.body.appendChild(g);setTimeout(function(){g.remove();},650);}
 
 /* links & thumbnails mode */
 function toggleLinkEdit(){var on=document.body.classList.toggle('linkedit');document.getElementById('bLink').classList.toggle('on',on);}
@@ -314,12 +379,58 @@ document.addEventListener('click',function(e){
   if(a){e.preventDefault();var u=prompt('Link URL (use mailto: for email):',a.getAttribute('href')==='#'?'https://':a.getAttribute('href'));if(u)a.setAttribute('href',u);return;}
 },true);
 
+/* ===== move & resize mode ===== */
+var moveSel=null, overlay=null, drag=null;
+function toggleMove(){var on=document.body.classList.toggle('moveedit');document.getElementById('bMove').classList.toggle('on',on);if(!on)clearSel();}
+function ensureOverlay(){if(overlay)return overlay;overlay=document.createElement('div');overlay.id='selbox';overlay.contentEditable='false';
+  overlay.innerHTML='<div class="mv" data-h="move"></div>'+['nw','n','ne','e','se','s','sw','w'].map(function(h){return '<div class="hd" data-h="'+h+'"></div>';}).join('')+'<button class="rs" title="Reset this element">⟲ reset</button>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('mousedown',startDrag);
+  overlay.querySelector('.rs').addEventListener('mousedown',function(e){e.stopPropagation();});
+  overlay.querySelector('.rs').addEventListener('click',function(e){e.stopPropagation();if(moveSel){moveSel.style.transform='';moveSel.style.width='';moveSel.style.height='';moveSel.style.fontSize='';positionOverlay();}});
+  return overlay;}
+function selectEl(el){moveSel=el;ensureOverlay();overlay.style.display='block';positionOverlay();}
+function clearSel(){moveSel=null;if(overlay)overlay.style.display='none';hideGuides();}
+function positionOverlay(){if(!moveSel||!overlay)return;var r=moveSel.getBoundingClientRect();overlay.style.left=r.left+'px';overlay.style.top=r.top+'px';overlay.style.width=r.width+'px';overlay.style.height=r.height+'px';}
+window.addEventListener('scroll',positionOverlay,true);window.addEventListener('resize',positionOverlay);
+document.addEventListener('click',function(e){
+  if(!document.body.classList.contains('moveedit'))return;
+  if(e.target.closest('#selbox')||e.target.closest('#ebar')||e.target.closest('#sbar')||e.target.closest('#pub')||e.target.closest('.arrangectl'))return;
+  var el=e.target.closest('.ed,.wf,.player,.stats,.work,.ctarow,.tile');
+  if(el){e.preventDefault();e.stopPropagation();selectEl(el);}else{clearSel();}
+},true);
+function isTextEl(el){return el.classList&&el.classList.contains('ed')&&!el.matches('.wf,.player,.stats,.work,.ctarow,.tile');}
+function startDrag(e){if(!moveSel)return;var h=e.target.dataset.h;if(!h)return;e.preventDefault();e.stopPropagation();
+  var r=moveSel.getBoundingClientRect();var cs=getComputedStyle(moveSel);
+  var tx=0,ty=0;var m=(moveSel.style.transform||'').match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);if(m){tx=+m[1];ty=+m[2];}
+  drag={h:h,sx:e.clientX,sy:e.clientY,tx:tx,ty:ty,w:r.width,ht:r.height,fs:parseFloat(cs.fontSize),baseLeft:r.left-tx,baseTop:r.top-ty,text:isTextEl(moveSel)};
+  document.addEventListener('mousemove',onDrag);document.addEventListener('mouseup',endDrag);}
+function onDrag(e){if(!drag||!moveSel)return;var dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;
+  if(drag.h==='move'){var nx=drag.tx+dx,ny=drag.ty+dy;var s=snap(nx,ny);moveSel.style.transform='translate('+s.x+'px,'+s.y+'px)';}
+  else{var w=drag.w,ht=drag.ht;
+    if(drag.h.indexOf('e')>=0)w=drag.w+dx;if(drag.h.indexOf('w')>=0)w=drag.w-dx;
+    if(drag.h.indexOf('s')>=0)ht=drag.ht+dy;if(drag.h.indexOf('n')>=0)ht=drag.ht-dy;
+    if(drag.text&&(drag.h.length===2)){var ratio=Math.max(.3,w/drag.w);moveSel.style.fontSize=(drag.fs*ratio).toFixed(1)+'px';}
+    else{if(drag.h.indexOf('e')>=0||drag.h.indexOf('w')>=0)moveSel.style.width=Math.max(40,w)+'px';
+      if(drag.h.indexOf('s')>=0||drag.h.indexOf('n')>=0)moveSel.style.height=Math.max(24,ht)+'px';}}
+  positionOverlay();}
+function endDrag(){drag=null;document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);hideGuides();}
+/* snap guides: viewport centre + content-left edge */
+function snap(nx,ny){var TH=7;hideGuides();var left=drag.baseLeft+nx,cx=left+drag.w/2;
+  var vcx=window.innerWidth/2;var wrap=document.querySelector('.wrap');var contentLeft=wrap?wrap.getBoundingClientRect().left+parseFloat(getComputedStyle(wrap).paddingLeft):0;
+  if(Math.abs(cx-vcx)<TH){nx+=(vcx-cx);showG('v',vcx);}
+  else if(Math.abs(left-contentLeft)<TH){nx+=(contentLeft-left);showG('v',contentLeft);}
+  return {x:nx,y:ny};}
+var guides=[];
+function showG(type,pos){var g=document.createElement('div');g.className='gline '+type;if(type==='v')g.style.left=pos+'px';else g.style.top=pos+'px';document.body.appendChild(g);guides.push(g);}
+function hideGuides(){guides.forEach(function(g){g.remove();});guides=[];}
+
 /* publish */
 function openPub(){document.getElementById('pub').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
 function closePub(){document.getElementById('pub').classList.remove('open');}
 function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
-function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
+function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl').forEach(function(e){e.remove();});var sb=c.querySelector('#selbox');if(sb)sb.remove();c.querySelectorAll('.gline,.aguide').forEach(function(e){e.remove();});c.querySelectorAll('.wrap>header,.wrap>section').forEach(function(e){e.style.outline='';});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit','arrange','moveedit');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
 async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok)ps('✓ Published! Live in about a minute.');else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
 </script>
 </body></html>
