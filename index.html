@@ -20,6 +20,9 @@ body.editing .ed{outline:1px dashed var(--accent);outline-offset:3px;border-radi
 body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mail{outline:2px dashed var(--accent);outline-offset:3px;cursor:pointer;}
 body.editing .tile .res{opacity:1;}
 #sbar .sw{width:22px;height:22px;padding:0;border-radius:6px;border:1px solid rgba(255,255,255,.3);cursor:pointer;}
+#sbar .grp{display:inline-flex;align-items:center;gap:5px;padding-right:12px;margin-right:4px;border-right:1px solid rgba(255,255,255,.18);}
+#sbar .grp:last-child{border-right:none;}
+#sbar .gl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.6;margin-right:3px;}
 .mark{border-bottom:2px dashed var(--accent);font-weight:600;}
 /* arrange mode */
 body.arrange .wrap>header,body.arrange .wrap>section{outline:1px dashed var(--faint);outline-offset:6px;border-radius:4px;position:relative;}
@@ -30,6 +33,7 @@ body.arrange .wrap>header,body.arrange .wrap>section{outline:1px dashed var(--fa
 .aguide{position:fixed;top:0;bottom:0;width:1px;background:var(--accent);z-index:60;pointer-events:none;opacity:.7;}
 /* move & resize */
 body.moveedit .ed,body.moveedit .wf,body.moveedit .player,body.moveedit .stats,body.moveedit .work,body.moveedit .tile{cursor:move;}
+body.moveedit .tile *,body.moveedit .vtile *{pointer-events:none;}
 #selbox{display:none;position:fixed;z-index:900;border:2px solid var(--accent);pointer-events:none;box-sizing:border-box;border-radius:4px;}
 #selbox .mv{position:absolute;inset:0;pointer-events:auto;cursor:move;}
 #selbox .hd{position:absolute;width:13px;height:13px;background:#fff;border:2px solid var(--accent);border-radius:50%;pointer-events:auto;box-sizing:border-box;box-shadow:0 1px 4px rgba(0,0,0,.3);}
@@ -52,6 +56,34 @@ body.moveedit .ed,body.moveedit .wf,body.moveedit .player,body.moveedit .stats,b
 #movetip li{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:5px;}
 #movetip li b{color:var(--ink);font-size:12.5px;}
 #movetip button{margin-top:12px;font-family:var(--font);font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:9px;border:none;background:var(--accent);color:var(--onacc);cursor:pointer;}
+/* floating contextual toolbar */
+#fbar{display:none;position:fixed;z-index:1000;gap:5px;background:var(--ink);padding:5px 6px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.45);}
+#fbar button{font-family:var(--font);font-size:12px;font-weight:700;padding:6px 9px;border-radius:7px;border:none;background:transparent;color:var(--bg);cursor:pointer;white-space:nowrap;}
+#fbar button:hover{background:var(--accent);color:var(--onacc);}
+/* inline add buttons */
+.addbtn{font-family:var(--font);font-size:13px;font-weight:700;color:var(--accent);background:transparent;border:2px dashed var(--accent);border-radius:10px;padding:10px 16px;cursor:pointer;display:none;align-items:center;justify-content:center;gap:6px;transition:background .15s;}
+body.editor .addbtn{display:inline-flex;}
+.addbtn:hover{background:color-mix(in srgb,var(--accent) 12%,transparent);}
+.work .addbtn{width:100%;min-height:80px;}
+.addbtn.vadd{font-size:12px;padding:6px 12px;border-width:1.5px;align-self:center;}
+/* drag-to-reorder handle */
+.dragh{position:absolute;top:6px;left:6px;z-index:6;width:24px;height:24px;border-radius:6px;background:var(--ink);color:#fff;border:none;cursor:grab;display:none;align-items:center;justify-content:center;font-size:13px;padding:0;}
+body.editor .dragh{display:flex;}
+.tile.dragging,.vtile.dragging{opacity:.5;outline:2px dashed var(--accent);}
+/* preview = visitor view: hide ALL editor chrome */
+body.preview #ebar,body.preview #sbar,body.preview #fbar,body.preview #selbox,body.preview #movetip,body.preview .addbtn,body.preview .dragh,body.preview .delx,body.preview .arrangectl{display:none!important;}
+body.preview .ed{outline:none!important;}
+body.preview{padding-top:0!important;}
+/* walkthrough */
+#tour{display:none;position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;}
+#tour.open{display:flex;}
+#tour .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px;max-width:380px;font-family:var(--font);box-shadow:0 30px 70px rgba(0,0,0,.5);}
+#tour .card h4{font-size:16px;margin:0 0 6px;color:var(--ink);}
+#tour .card p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 8px;}
+#tour .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+#tour .dots{font-size:11px;color:var(--muted);}
+#tour button{font-family:var(--font);font-size:13px;font-weight:700;padding:8px 16px;border-radius:9px;border:none;background:var(--accent);color:var(--onacc);cursor:pointer;}
+#tour .sk{background:transparent;color:var(--muted);}
 
 /* TYPE ROLES — only 4 sizes, vary weight/colour */
 .t-xl{font-size:var(--xl);font-weight:800;letter-spacing:-.03em;line-height:1.04;}
@@ -148,8 +180,31 @@ body.moveedit .ed,body.moveedit .wf,body.moveedit .player,body.moveedit .stats,b
 .acc .item.open .ar{transform:rotate(180deg);}
 .acc .bd{max-height:0;overflow:hidden;transition:max-height .3s ease;}
 .acc .bd .inr{padding:0 0 18px 136px;font-size:var(--md);color:var(--muted);line-height:1.65;}
-.acc .item.open .bd{max-height:220px;}
+.acc .item.open .bd{max-height:1000px;}
 .acc .res{display:inline-block;background:var(--accent);color:var(--onacc);font-size:var(--sm);font-weight:600;padding:3px 9px;border-radius:6px;margin-top:8px;}
+/* video slots inside a role */
+.vrow{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;}
+.vtile{position:relative;flex:1 1 0;min-width:160px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line);display:grid;place-items:center;color:#fff;text-decoration:none;background-size:cover;background-position:center;transition:transform .18s,box-shadow .18s;}
+.vtile .ph{font-size:var(--sm);font-weight:600;opacity:.92;display:flex;align-items:center;gap:6px;}
+.vtile:hover{transform:translateY(-3px);box-shadow:0 14px 30px -14px rgba(0,0,0,.55);}
+.vtile .play{position:absolute;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);color:#161519;display:grid;place-items:center;font-size:15px;opacity:0;transform:scale(.7);transition:.2s;}
+.vtile:hover .play{opacity:1;transform:scale(1);}
+.vg1{background-image:linear-gradient(120deg,#E0654E,#9B3D5E);}.vg2{background-image:linear-gradient(120deg,#3E7CA8,#2A4E78);}
+/* delete badge (shown in Links & thumbnails mode) */
+.delx{position:absolute;top:6px;right:6px;z-index:6;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;border:2px solid #fff;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:13px;line-height:1;padding:0;}
+body.linkedit .delx{display:flex;}
+body.linkedit .vtile,body.linkedit .vtile *{cursor:pointer;}
+/* playful touches */
+.h2{position:relative;}
+.h2::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:9px;vertical-align:middle;}
+.cta{transition:transform .16s,box-shadow .16s;}
+.cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 12px 26px -10px var(--accent);}
+.tile{transition:transform .18s,box-shadow .18s;}
+.tile:hover{transform:translateY(-4px) rotate(-.6deg);box-shadow:0 18px 36px -16px rgba(0,0,0,.55);}
+.stat b{transition:color .15s,transform .15s;display:inline-block;}
+.stat:hover b{color:var(--accent);transform:translateY(-2px);}
+.acc .hd{transition:background .15s;border-radius:8px;}
+.acc .hd:hover{background:color-mix(in srgb,var(--accent) 9%,transparent);}
 
 .contact{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
 .contact .big{font-size:var(--lg);font-weight:800;letter-spacing:-.02em;line-height:1.06;}
@@ -165,6 +220,21 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
 #ebar .l{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
 .eb{font-family:var(--font);font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;}
 .eb.on{background:var(--accent);color:var(--onacc);border-color:var(--accent);}
+.accdot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.35);cursor:pointer;padding:0;margin:0 2px;vertical-align:middle;}
+.accdot.on{outline:2px solid var(--ink);outline-offset:1px;}
+#saveind{color:var(--accent);font-weight:700;}
+/* bigger, touch-friendly controls on phones/tablets */
+@media (max-width:760px){
+  #fbar button{padding:10px 12px;font-size:13px;}
+  #selbox .hd{width:18px;height:18px;}
+  #selbox .hd[data-h=nw]{left:-10px;top:-10px;}#selbox .hd[data-h=n]{left:calc(50% - 9px);top:-10px;}#selbox .hd[data-h=ne]{right:-10px;top:-10px;}
+  #selbox .hd[data-h=e]{right:-10px;top:calc(50% - 9px);}#selbox .hd[data-h=se]{right:-10px;bottom:-10px;}#selbox .hd[data-h=s]{left:calc(50% - 9px);bottom:-10px;}
+  #selbox .hd[data-h=sw]{left:-10px;bottom:-10px;}#selbox .hd[data-h=w]{left:-10px;top:calc(50% - 9px);}
+  .delx{width:30px;height:30px;font-size:15px;}
+  .dragh{width:30px;height:30px;font-size:15px;}
+  #ebar{gap:6px;padding:8px 10px;}.eb{padding:7px 9px;}
+  #movetip,#tour .card{max-width:88vw;}
+}
 .eb.pri{background:var(--accent);color:var(--onacc);border-color:var(--accent);margin-left:auto;}
 #sbar{position:fixed;top:46px;left:0;right:0;z-index:999;background:var(--ink);color:var(--bg);align-items:center;gap:8px;padding:8px 16px;flex-wrap:wrap;}
 #sbar .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
@@ -189,27 +259,50 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
   <button class="eb" id="bArrange" onclick="toggleArrange()">⤢ Arrange &amp; align</button>
   <button class="eb" id="bMove" onclick="toggleMove()">✥ Move &amp; resize</button>
   <button class="eb" id="bLink" onclick="toggleLinkEdit()">🔗 Links &amp; thumbnails</button>
+  <button class="eb" id="bUndo" onclick="doUndo()" title="Undo the last change (⌘/Ctrl-Z)" disabled>↶ Undo</button>
   <span class="l">Theme</span><button class="eb on" id="thD" onclick="setTheme('dark')">Charcoal</button><button class="eb" id="thL" onclick="setTheme('light')">Light</button>
+  <span class="l">Accent</span><span id="accdots">
+    <button class="accdot on" title="Coral" style="background:#E0654E" onclick="setAccent('#E0654E','#161519',this)"></button>
+    <button class="accdot" title="Amber" style="background:#E0954E" onclick="setAccent('#E0954E','#161519',this)"></button>
+    <button class="accdot" title="Teal" style="background:#3FA6A0" onclick="setAccent('#3FA6A0','#0e1716',this)"></button>
+    <button class="accdot" title="Violet" style="background:#9B7BE0" onclick="setAccent('#9B7BE0','#15101f',this)"></button>
+    <button class="accdot" title="Rose" style="background:#E067A0" onclick="setAccent('#E067A0','#1f1016',this)"></button>
+  </span>
   <span class="l">Font</span><select class="eb" onchange="setFont(this.value)"><option value='"Plus Jakarta Sans",sans-serif'>Jakarta</option><option value='"Hanken Grotesk",sans-serif'>Hanken</option><option value='"Archivo",sans-serif'>Archivo</option><option value='"Manrope",sans-serif'>Manrope</option></select>
+  <button class="eb" id="bPreview" onclick="togglePreview()" title="See exactly what visitors see">👁 Preview</button>
+  <button class="eb" id="bReset" onclick="resetAll()" title="Undo ALL moves &amp; resizing back to clean">⟲ Reset all</button>
+  <button class="eb" id="bTour" onclick="startTour()" title="Show the how-to walkthrough">？ Help</button>
+  <span class="l" id="saveind" title="Your edits are auto-saved in this browser"></span>
   <button class="eb pri" onclick="openPub()">Publish ▸</button>
 </div>
-<div id="sbar"><span class="l">Selected:</span>
-  <select onmousedown="event.preventDefault()" onchange="setFontSel(this.value);this.selectedIndex=0">
-    <option value="">Font…</option><option value='"Plus Jakarta Sans",sans-serif'>Jakarta</option><option value='"Hanken Grotesk",sans-serif'>Hanken</option><option value='"Archivo",sans-serif'>Archivo</option><option value='"Manrope",sans-serif'>Manrope</option>
-  </select>
-  <select onmousedown="event.preventDefault()" onchange="setSizeSel(this.value);this.selectedIndex=0">
-    <option value="">Size…</option><option value="var(--xl)">Headline</option><option value="var(--lg)">Large</option><option value="var(--md)">Body</option><option value="var(--sm)">Label</option>
-  </select>
-  <span class="l">Colour:</span>
-  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--accent)')" style="background:var(--accent)" title="Accent"></button>
-  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--ink)')" style="background:var(--ink)" title="Ink"></button>
-  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--muted)')" style="background:var(--muted)" title="Muted"></button>
-  <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--faint)')" style="background:var(--faint)" title="Faint"></button>
-  <input type="color" oninput="setColorSel(this.value)" title="Custom colour">
-  <button onmousedown="event.preventDefault()" onclick="fmt('bold')" style="font-weight:800">B</button>
-  <button onmousedown="event.preventDefault()" onclick="fmt('italic')" style="font-style:italic">i</button>
-  <button onmousedown="event.preventDefault()" onclick="highlightSel()" title="Highlight">✸ Highlight</button>
-  <button onmousedown="event.preventDefault()" onclick="addLink()">🔗 Link</button>
+<input type="file" id="imgpick" accept="image/*" style="display:none">
+<div id="sbar"><span class="l">Tap a line (or highlight words), then:</span>
+  <span class="grp"><span class="gl">Size</span>
+    <button onmousedown="event.preventDefault()" onclick="setSizeSel('var(--xl)')" title="Headline size">Headline</button>
+    <button onmousedown="event.preventDefault()" onclick="setSizeSel('var(--lg)')" title="Large size">Large</button>
+    <button onmousedown="event.preventDefault()" onclick="setSizeSel('var(--md)')" title="Body size">Body</button>
+    <button onmousedown="event.preventDefault()" onclick="setSizeSel('var(--sm)')" title="Label size">Label</button>
+    <button onmousedown="event.preventDefault()" onclick="stepSize(-1)" title="A little smaller">A−</button>
+    <button onmousedown="event.preventDefault()" onclick="stepSize(1)" title="A little bigger">A+</button>
+  </span>
+  <span class="grp"><span class="gl">Font</span>
+    <button onmousedown="event.preventDefault()" onclick="setFontSel('&quot;Plus Jakarta Sans&quot;,sans-serif')">Jakarta</button>
+    <button onmousedown="event.preventDefault()" onclick="setFontSel('&quot;Hanken Grotesk&quot;,sans-serif')">Hanken</button>
+    <button onmousedown="event.preventDefault()" onclick="setFontSel('&quot;Archivo&quot;,sans-serif')">Archivo</button>
+    <button onmousedown="event.preventDefault()" onclick="setFontSel('&quot;Manrope&quot;,sans-serif')">Manrope</button>
+  </span>
+  <span class="grp"><span class="gl">Colour</span>
+    <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--accent)')" style="background:var(--accent)" title="Accent"></button>
+    <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--ink)')" style="background:var(--ink)" title="Ink"></button>
+    <button class="sw" onmousedown="event.preventDefault()" onclick="setColorSel('var(--muted)')" style="background:var(--muted)" title="Muted"></button>
+    <input type="color" oninput="setColorSel(this.value)" title="Custom colour">
+  </span>
+  <span class="grp">
+    <button onmousedown="event.preventDefault()" onclick="fmt('bold')" style="font-weight:800">B</button>
+    <button onmousedown="event.preventDefault()" onclick="fmt('italic')" style="font-style:italic">i</button>
+    <button onmousedown="event.preventDefault()" onclick="highlightSel()" title="Highlight">✸ Highlight</button>
+    <button onmousedown="event.preventDefault()" onclick="addLink()">🔗 Link</button>
+  </span>
 </div>
 <div id="pub"><div class="card"><h3>Publish to your live site</h3>
   <p>One-time: paste a GitHub fine-grained token (repo <b>Experiments</b>, Contents: Read &amp; write). Saved in this browser only.</p>
@@ -251,36 +344,23 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
       <div class="stat proof"><b class="num ed">500+</b><span class="ed">interviews conducted</span><span class="pop">Including the Indian Prime Minister, a Gujarat Chief Minister, and Bollywood A-listers.</span></div>
     </div>
     <div class="ctarow">
-      <a class="cta ed" href="mailto:aarti.boriya@protonmail.com">Work with me →</a>
+      <a class="cta ed" href="mailto:aarti.boriya@protonmail.com?subject=Let%27s%20work%20together">Work with me →</a>
       <div class="scrollcue"><span class="a">↓</span> &nbsp;scroll for work, story &amp; experience</div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="h2 ed">Now playing</div>
-    <div class="player">
-      <div class="art"><div class="eq"><i style="animation-delay:0s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.22s"></i></div></div>
-      <div class="np"><div class="k ed">▶ CURRENTLY</div><div class="ti ed" id="npTitle">Head of Content · upliance.ai</div><div class="bar"><span></span></div></div>
-    </div>
-    <div class="tracks">
-      <button onclick="setNP(this)"><span class="ed">Head of Content · upliance.ai</span><span class="d ed">2024 – Present</span></button>
-      <button onclick="setNP(this)"><span class="ed">Consultant · IIMA Ventures</span><span class="d ed">2025</span></button>
-      <button onclick="setNP(this)"><span class="ed">Content &amp; Community · Criya (YC)</span><span class="d ed">2023</span></button>
-      <button onclick="setNP(this)"><span class="ed">Prime-time Host &amp; Producer · Radio City</span><span class="d ed">2015 – 2020</span></button>
     </div>
   </section>
 
   <section class="sec">
     <div class="h2 ed">Selected work</div>
     <div class="work">
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b class="ed">4×</b><span class="ed">Instagram in 4 months</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b class="ed">~180</b><span class="ed">leaders convened</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g3"></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b class="ed">700+</b><span class="ed">hours of content</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b class="ed">EC</b><span class="ed">voter awareness, Gujarat</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b class="ed">28%+</b><span class="ed">YouTube CTR</span></div></a>
-      <a class="tile" href="#" target="_blank" rel="noopener"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b class="ed">300K</b><span class="ed">audience reached daily</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b class="ed">4×</b><span class="ed">Instagram in 4 months</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b class="ed">~180</b><span class="ed">leaders convened</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g3"></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b class="ed">700+</b><span class="ed">hours of content</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b class="ed">EC</b><span class="ed">voter awareness, Gujarat</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b class="ed">28%+</b><span class="ed">YouTube CTR</span></div></a>
+      <a class="tile" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.tile'))">⠿</button><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b class="ed">300K</b><span class="ed">audience reached daily</span></div></a>
+      <button class="addbtn" onclick="addTile()" title="Add another work tile">＋ Add work tile</button>
     </div>
-    <p class="note ed">↑ in edit mode, turn on “🔗 Links &amp; thumbnails”, then click a tile to set its image and link.</p>
+    <p class="note ed">In “🔗 Links &amp; thumbnails” mode: click a tile to set its image &amp; link, or tap the ✕ to remove it.</p>
   </section>
 
   <section class="sec">
@@ -292,13 +372,14 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
   <section class="sec">
     <div class="h2 ed">Experience</div>
     <div class="acc">
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</div></div></div>
-      <div class="item open"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.<br><span class="res">Instagram 4× in 4 months · YouTube CTR +28%</span></div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.<br><span class="res">300K daily listeners · +15% year one</span></div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</div></div></div>
-      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr ed">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.</span> <span class="res ed">Instagram 4× in 4 months · YouTube CTR +28%</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.</span> <span class="res ed">300K daily listeners · +15% year one</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video</span><span class="play">▶</span></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
     </div>
+    <button class="addbtn" onclick="addRole()" title="Add another experience role">＋ Add a role</button>
   </section>
 
   <section class="sec contact">
@@ -333,24 +414,41 @@ if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es
 
 /* now playing — reads the clicked track's title */
 function setNP(btn){document.getElementById('npTitle').innerHTML=btn.querySelector('span').innerHTML;}
+/* accordion toggle, disabled while editing so you can edit the year/title */
+function accToggle(hd){var b=document.body;if(b.classList.contains('editing')||b.classList.contains('moveedit')||b.classList.contains('arrange'))return;hd.parentElement.classList.toggle('open');}
 
 /* theme + font */
 function setTheme(t){document.body.classList.toggle('light',t==='light');document.getElementById('thD').classList.toggle('on',t==='dark');document.getElementById('thL').classList.toggle('on',t==='light');}
 function setFont(f){document.documentElement.style.setProperty('--font',f);}
 
 /* editor */
-if(location.hash==='#edit')document.body.classList.add('editor');
-window.addEventListener('hashchange',function(){if(location.hash==='#edit')document.body.classList.add('editor');});
+if(location.hash==='#edit'){document.body.classList.add('editor');maybeRestore();maybeAutoTour();}
+window.addEventListener('hashchange',function(){if(location.hash==='#edit'){document.body.classList.add('editor');maybeAutoTour();}});
 function toggleEdit(){var on=document.body.classList.toggle('editing');document.getElementById('bEdit').classList.toggle('on',on);document.querySelectorAll('.ed').forEach(function(e){e.contentEditable=on?'true':'false';});document.getElementById('bEdit').textContent=on?'✓ Done':'✎ Edit text';}
-var savedRange=null;document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s&&s.rangeCount&&document.body.classList.contains('editing'))savedRange=s.getRangeAt(0).cloneRange();});
+var savedRange=null, activeEd=null;
+document.addEventListener('selectionchange',function(){
+  if(!document.body.classList.contains('editing'))return;
+  var s=window.getSelection();if(!s||!s.rangeCount)return;
+  var r=s.getRangeAt(0);var node=r.startContainer;var elp=(node.nodeType===3?node.parentElement:node);
+  var ed=elp&&elp.closest?elp.closest('.ed'):null;
+  if(ed){activeEd=ed;savedRange=r.collapsed?null:r.cloneRange();}
+});
 function fmt(cmd,val){if(savedRange){var s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}try{document.execCommand('styleWithCSS',false,true);}catch(e){}document.execCommand(cmd,false,val||null);}
 function addLink(){var url=prompt('Link the selected text to (URL):','https://');if(url){fmt('createLink',url);}}
-/* wrap current selection in a styled span (for size/colour/font/highlight) */
+/* wrap current selection in a styled span */
 function wrapSel(styler){var sel=window.getSelection();if(savedRange){sel.removeAllRanges();sel.addRange(savedRange);}if(!sel.rangeCount)return;var range=sel.getRangeAt(0);if(range.collapsed)return;var span=document.createElement('span');styler(span);try{range.surroundContents(span);}catch(e){var frag=range.extractContents();span.appendChild(frag);range.insertNode(span);}sel.removeAllRanges();savedRange=null;}
-function setSizeSel(v){if(v)wrapSel(function(s){s.style.fontSize=v;});}
-function setColorSel(v){if(v)wrapSel(function(s){s.style.color=v;});}
-function setFontSel(v){if(v)wrapSel(function(s){s.style.fontFamily=v;});}
-function highlightSel(){wrapSel(function(s){s.className='mark';});}
+function hasSel(){return savedRange&&!savedRange.collapsed;}
+/* apply to highlighted words if any, else to the whole line you clicked into */
+function applyStyle(styler){if(hasSel()){pushUndo();wrapSel(styler);}else if(activeEd){pushUndo();styler(activeEd);}else{alert('Tap a line of text first, then choose a style.');}}
+function setSizeSel(v){if(v)applyStyle(function(s){s.style.fontSize=v;});}
+function setColorSel(v){if(v)applyStyle(function(s){s.style.color=v;});}
+function setFontSel(v){if(v)applyStyle(function(s){s.style.fontFamily=v;});}
+function highlightSel(){if(hasSel())wrapSel(function(s){s.className='mark';});else if(activeEd)activeEd.classList.toggle('mark');}
+function stepSize(dir){
+  if(hasSel()){var node=savedRange.startContainer;var pe=(node.nodeType===3?node.parentElement:node);var cur=parseFloat(getComputedStyle(pe).fontSize);wrapSel(function(s){s.style.fontSize=Math.max(8,cur+dir*2)+'px';});}
+  else if(activeEd){var c=parseFloat(getComputedStyle(activeEd).fontSize);activeEd.style.fontSize=Math.max(8,c+dir*2)+'px';}
+  else{alert('Tap a line of text first, then use A− / A+.');}
+}
 
 /* arrange & align mode */
 function toggleArrange(){var on=document.body.classList.toggle('arrange');document.getElementById('bArrange').classList.toggle('on',on);
@@ -359,11 +457,11 @@ function toggleArrange(){var on=document.body.classList.toggle('arrange');docume
     var c=document.createElement('div');c.className='arrangectl';c.contentEditable='false';
     c.innerHTML='<button title="Move up">↑</button><button title="Move down">↓</button><span class="sep"></span><button title="Align left">⬅</button><button title="Align centre">■</button><button title="Align right">➡</button>';
     var bs=c.querySelectorAll('button');
-    bs[0].onclick=function(){var p=blk.previousElementSibling;if(p&&p.tagName!=='SCRIPT')blk.parentNode.insertBefore(blk,p);};
-    bs[1].onclick=function(){var n=blk.nextElementSibling;if(n)blk.parentNode.insertBefore(n,blk);};
-    bs[2].onclick=function(){applyAlign(blk,'left');};
-    bs[3].onclick=function(){applyAlign(blk,'center');};
-    bs[4].onclick=function(){applyAlign(blk,'right');};
+    bs[0].onclick=function(){var p=blk.previousElementSibling;if(p&&p.tagName!=='SCRIPT'){pushUndo();blk.parentNode.insertBefore(blk,p);}};
+    bs[1].onclick=function(){var n=blk.nextElementSibling;if(n){pushUndo();blk.parentNode.insertBefore(n,blk);}};
+    bs[2].onclick=function(){pushUndo();applyAlign(blk,'left');};
+    bs[3].onclick=function(){pushUndo();applyAlign(blk,'center');};
+    bs[4].onclick=function(){pushUndo();applyAlign(blk,'right');};
     blk.appendChild(c);
   });}
 }
@@ -375,15 +473,27 @@ function applyAlign(blk,al){blk.style.textAlign=al;var row=blk.querySelector('.c
 function toggleLinkEdit(){var on=document.body.classList.toggle('linkedit');document.getElementById('bLink').classList.toggle('on',on);}
 document.addEventListener('click',function(e){
   if(!document.body.classList.contains('linkedit'))return;
+  /* delete (✕) button */
+  var del=e.target.closest('.delx');
+  if(del){e.preventDefault();e.stopPropagation();var host=del.closest('.tile,.vtile');if(host&&confirm('Remove this?')){pushUndo();host.remove();}return;}
+  /* video slot inside a role */
+  var vt=e.target.closest('.vtile');
+  if(vt){e.preventDefault();e.stopPropagation();
+    if(confirm('Set the thumbnail image?\n\nOK = upload from your device\nCancel = paste an image URL')){pickImage(vt,'video');}
+    else{var vimg=prompt('Thumbnail image URL (leave blank to keep current):','');if(vimg){pushUndo();vt.style.backgroundImage='url("'+vimg+'")';vt.style.backgroundSize='cover';vt.style.backgroundPosition='center';var ph=vt.querySelector('.ph');if(ph)ph.style.display='none';saveSoon();}}
+    var vlk=prompt('Link this video to (YouTube / Instagram / etc URL):',vt.getAttribute('href')==='#'?'https://':vt.getAttribute('href'));
+    if(vlk){vt.setAttribute('href',vlk);saveSoon();}
+    return;}
+  /* work tile */
   var tile=e.target.closest('.tile');
-  if(tile){e.preventDefault();
-    var img=prompt('Thumbnail image URL (leave blank to keep current):','');
-    if(img){var th=tile.querySelector('.th');th.style.backgroundImage='url("'+img+'")';th.style.backgroundSize='cover';th.style.backgroundPosition='center';th.style.animation='none';}
+  if(tile){e.preventDefault();e.stopPropagation();
+    if(confirm('Set the tile image?\n\nOK = upload from your device\nCancel = paste an image URL')){pickImage(tile,'tile');}
+    else{var img=prompt('Thumbnail image URL (leave blank to keep current):','');if(img){pushUndo();var th=tile.querySelector('.th');th.style.backgroundImage='url("'+img+'")';th.style.backgroundSize='cover';th.style.backgroundPosition='center';th.style.animation='none';saveSoon();}}
     var lk=prompt('Link this work to (URL — your YouTube/Instagram/etc):',tile.getAttribute('href')==='#'?'https://':tile.getAttribute('href'));
-    if(lk)tile.setAttribute('href',lk);
+    if(lk){tile.setAttribute('href',lk);saveSoon();}
     return;}
   var a=e.target.closest('.soc a, a.cta, a.mail');
-  if(a){e.preventDefault();var u=prompt('Link URL (use mailto: for email):',a.getAttribute('href')==='#'?'https://':a.getAttribute('href'));if(u)a.setAttribute('href',u);return;}
+  if(a){e.preventDefault();var u=prompt('Link URL (use mailto: for email):',a.getAttribute('href')==='#'?'https://':a.getAttribute('href'));if(u){a.setAttribute('href',u);saveSoon();}return;}
 },true);
 
 /* ===== move & resize mode (Canva-style) ===== */
@@ -398,18 +508,18 @@ function ensureOverlay(){if(overlay)return overlay;overlay=document.createElemen
   rs.addEventListener('mousedown',function(e){e.stopPropagation();e.preventDefault();});
   rs.addEventListener('click',function(e){e.stopPropagation();if(moveSel){moveSel.style.transform='';moveSel.style.width='';moveSel.style.maxWidth='';moveSel.style.height='';moveSel.style.fontSize='';positionOverlay();}});
   return overlay;}
-function selectEl(el){moveSel=el;ensureOverlay();overlay.style.display='block';overlay.classList.toggle('istext',isTextEl(el));positionOverlay();}
-function clearSel(){moveSel=null;if(overlay)overlay.style.display='none';hideGuides();}
+function selectEl(el){moveSel=el;ensureOverlay();overlay.style.display='block';overlay.classList.toggle('istext',isTextEl(el));positionOverlay();showFbar(el);}
+function clearSel(){moveSel=null;if(overlay)overlay.style.display='none';hideGuides();hideFbar();}
 function positionOverlay(){if(!moveSel||!overlay)return;var r=moveSel.getBoundingClientRect();overlay.style.left=r.left+'px';overlay.style.top=r.top+'px';overlay.style.width=r.width+'px';overlay.style.height=r.height+'px';}
 window.addEventListener('scroll',positionOverlay,true);window.addEventListener('resize',positionOverlay);
 document.addEventListener('click',function(e){
   if(!document.body.classList.contains('moveedit'))return;
   if(e.target.closest('#selbox')||e.target.closest('#ebar')||e.target.closest('#sbar')||e.target.closest('#pub')||e.target.closest('.arrangectl')||e.target.closest('#movetip'))return;
-  var el=e.target.closest('.ed,.wf,.player,.stats,.work,.ctarow,.tile');
+  var el=e.target.closest('.ed,.wf,.stats,.work,.ctarow,.tile,.vtile');
   if(el){e.preventDefault();e.stopPropagation();selectEl(el);}else{clearSel();}
 },true);
-function isTextEl(el){return el.classList&&el.classList.contains('ed')&&!el.matches('.wf,.player,.stats,.work,.ctarow,.tile');}
-function startDrag(e){if(!moveSel)return;var h=e.target.dataset.h;if(!h)return;e.preventDefault();e.stopPropagation();
+function isTextEl(el){return el.classList&&el.classList.contains('ed')&&!el.matches('.wf,.stats,.work,.ctarow,.tile,.vtile');}
+function startDrag(e){if(!moveSel)return;var h=e.target.dataset.h;if(!h)return;e.preventDefault();e.stopPropagation();pushUndo();
   var r=moveSel.getBoundingClientRect();var cs=getComputedStyle(moveSel);
   var tx=0,ty=0;var m=(moveSel.style.transform||'').match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);if(m){tx=+m[1];ty=+m[2];}
   drag={h:h,sx:e.clientX,sy:e.clientY,tx:tx,ty:ty,w:r.width,ht:r.height,fs:parseFloat(cs.fontSize),baseLeft:r.left-tx,baseTop:r.top-ty,text:isTextEl(moveSel),corner:(h.length===2)};
@@ -430,8 +540,8 @@ function onDrag(e){if(!drag||!moveSel)return;var dx=e.clientX-drag.sx,dy=e.clien
     if(drag.h==='e'||drag.h==='w'){moveSel.style.width=Math.max(60,w)+'px';moveSel.style.maxWidth='none';}
     if(drag.h==='s'||drag.h==='n'){moveSel.style.height=Math.max(24,ht)+'px';}
   }
-  positionOverlay();}
-function endDrag(){drag=null;document.body.style.userSelect='';document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);hideGuides();}
+  positionOverlay();positionFbar();}
+function endDrag(){drag=null;document.body.style.userSelect='';document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);hideGuides();saveSoon();}
 /* snap guides: page centre + content-left edge */
 function snap(nx,ny){var TH=8;hideGuides();var left=drag.baseLeft+nx,cx=left+drag.w/2;
   var vcx=window.innerWidth/2;var wrap=document.querySelector('.wrap');var contentLeft=wrap?wrap.getBoundingClientRect().left+parseFloat(getComputedStyle(wrap).paddingLeft):0;
@@ -448,12 +558,112 @@ function showTip(){if(localStorage.getItem('movetip_seen'))return;if(document.ge
 function dismissTip(){try{localStorage.setItem('movetip_seen','1');}catch(e){}hideTip();}
 function hideTip(){var t=document.getElementById('movetip');if(t)t.remove();}
 
+/* ===== contextual editor engine ===== */
+/* undo */
+var undoStack=[];
+function snapshot(){var c=document.querySelector('.wrap').cloneNode(true);c.querySelectorAll('.arrangectl').forEach(function(e){e.remove();});c.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable');});return c.innerHTML;}
+function pushUndo(){try{undoStack.push(snapshot());if(undoStack.length>60)undoStack.shift();var u=document.getElementById('bUndo');if(u)u.disabled=false;}catch(e){}}
+function doUndo(){if(!undoStack.length)return;var html=undoStack.pop();document.querySelector('.wrap').innerHTML=html;clearSel();hideFbar();if(document.body.classList.contains('editing'))document.querySelectorAll('.ed').forEach(function(e){e.contentEditable='true';});if(document.body.classList.contains('arrange')){document.body.classList.remove('arrange');toggleArrange();}var u=document.getElementById('bUndo');if(u)u.disabled=!undoStack.length;}
+document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&(e.key==='z'||e.key==='Z')){e.preventDefault();doUndo();}});
+
+/* floating contextual toolbar */
+var fbar=null, fbarFor=null;
+function ensureFbar(){if(fbar)return fbar;fbar=document.createElement('div');fbar.id='fbar';fbar.contentEditable='false';document.body.appendChild(fbar);return fbar;}
+function showFbar(el){ensureFbar();fbarFor=el;var h='';
+  h+='<button onmousedown="event.preventDefault()" onclick="dupEl()" title="Make an exact copy">⧉ Duplicate</button>';
+  h+='<button onmousedown="event.preventDefault()" onclick="delEl()" title="Delete this">🗑 Delete</button>';
+  if(el.classList.contains('tile')){h+='<button onmousedown="event.preventDefault()" onclick="addTile()" title="Add a new work tile">＋ Add tile</button>';h+='<button onmousedown="event.preventDefault()" onclick="pickImage(fbarFor,\'tile\')" title="Upload an image from your device">🖼 Image</button>';}
+  if(el.classList.contains('vtile')){h+='<button onmousedown="event.preventDefault()" onclick="addVideo(fbarFor)" title="Add a video in this role">＋ Add video</button>';h+='<button onmousedown="event.preventDefault()" onclick="pickImage(fbarFor,\'video\')" title="Upload a thumbnail from your device">🖼 Image</button>';}
+  fbar.innerHTML=h;fbar.style.display='flex';positionFbar();}
+function positionFbar(){if(!fbar||!fbarFor||fbar.style.display==='none')return;var r=fbarFor.getBoundingClientRect();var top=r.top-44;if(top<60)top=r.bottom+8;fbar.style.left=Math.max(8,Math.min(r.left,window.innerWidth-fbar.offsetWidth-8))+'px';fbar.style.top=top+'px';}
+function hideFbar(){if(fbar)fbar.style.display='none';fbarFor=null;}
+window.addEventListener('scroll',positionFbar,true);window.addEventListener('resize',positionFbar);
+
+/* add / duplicate / delete */
+function dupEl(){if(!fbarFor)return;pushUndo();var c=fbarFor.cloneNode(true);if(fbarFor.nextSibling)fbarFor.parentNode.insertBefore(c,fbarFor.nextSibling);else fbarFor.parentNode.appendChild(c);clearSel();selectEl(c);showFbar(c);saveSoon();}
+function delEl(){if(!fbarFor)return;pushUndo();var el=fbarFor;clearSel();hideFbar();el.remove();saveSoon();}
+function addTile(){var work=document.querySelector('.work');if(!work)return;pushUndo();var tiles=work.querySelectorAll('.tile');var c=tiles[tiles.length-1].cloneNode(true);var th=c.querySelector('.th');if(th){th.style.backgroundImage='';}c.setAttribute('href','#');var cp=c.querySelector('.cp');if(cp)cp.textContent='New project';work.insertBefore(c,document.querySelector('.work .addbtn'));if(document.body.classList.contains('moveedit')){selectEl(c);showFbar(c);}saveSoon();} /*sv*/
+function addVideo(near){var row=near&&near.closest?near.closest('.vrow'):document.querySelector('.vrow');if(!row)return;pushUndo();var v=row.querySelector('.vtile').cloneNode(true);v.style.backgroundImage='';v.setAttribute('href','#');var ph=v.querySelector('.ph');if(ph)ph.style.display='';row.insertBefore(v,row.querySelector('.vadd'));saveSoon();}
+function addRole(){var acc=document.querySelector('.acc');if(!acc)return;pushUndo();var items=acc.querySelectorAll('.item');var c=items[items.length-1].cloneNode(true);c.classList.add('open');var yr=c.querySelector('.yr');if(yr)yr.textContent='Year – Year';var ti=c.querySelector('.ti');if(ti)ti.textContent='Role · Company';var sp=c.querySelector('.inr .ed');if(sp)sp.textContent='What you did in this role — a sentence or two.';if(document.body.classList.contains('editing'))c.querySelectorAll('.ed').forEach(function(e){e.contentEditable='true';});acc.appendChild(c);saveSoon();}
+
+/* drag-to-reorder (tiles within .work, videos within a .vrow) */
+var sortDrag=null;
+function startSort(e,el){if(!el)return;e.preventDefault();e.stopPropagation();pushUndo();sortDrag={el:el,parent:el.parentNode};el.classList.add('dragging');document.addEventListener('pointermove',onSort);document.addEventListener('pointerup',endSort);}
+function onSort(e){if(!sortDrag)return;var sel=sortDrag.el.classList.contains('tile')?'.tile':'.vtile';var sibs=[].slice.call(sortDrag.parent.children).filter(function(c){return c!==sortDrag.el&&c.matches(sel);});var placed=false;for(var i=0;i<sibs.length;i++){var r=sibs[i].getBoundingClientRect();var midY=r.top+r.height/2,midX=r.left+r.width/2;if(e.clientY<midY-2||(Math.abs(e.clientY-midY)<r.height/2&&e.clientX<midX)){sortDrag.parent.insertBefore(sortDrag.el,sibs[i]);placed=true;break;}}
+  if(!placed){var anchor=sortDrag.parent.querySelector('.addbtn');if(anchor)sortDrag.parent.insertBefore(sortDrag.el,anchor);else sortDrag.parent.appendChild(sortDrag.el);}}
+function endSort(){if(!sortDrag)return;sortDrag.el.classList.remove('dragging');sortDrag=null;document.removeEventListener('pointermove',onSort);document.removeEventListener("pointerup",endSort);saveSoon();}
+
+/* preview / visitor view */
+function togglePreview(){var on=document.body.classList.toggle('preview');var btn=document.getElementById('bPreview');btn.classList.toggle('on',on);btn.textContent=on?'✕ Exit preview':'👁 Preview';if(on){clearSel();hideFbar();}}
+
+/* one-time walkthrough */
+var tstep=0;
+var tour=[
+ {h:'Welcome to your editor 👋',p:'This bar at the top is your toolbar. Nothing you do here is permanent until you click <b>Publish</b>. Let\'s take 30 seconds to see what you can do.'},
+ {h:'1 · Edit any text',p:'Click <b>✎ Edit text</b>, then click any word, number, year, or title and just type. Highlight words (or tap a line) and use the style buttons for <b>size, font, colour, highlight</b>.'},
+ {h:'2 · Move & resize anything',p:'Click <b>✥ Move &amp; resize</b>, then click any block. Drag the middle to move it; drag a corner to grow it; drag a side to make it wider. A little toolbar appears to <b>Duplicate</b> or <b>Delete</b> it too.'},
+ {h:'3 · Add, copy, delete, reorder',p:'Look for the dashed <b>＋ Add</b> buttons to add work tiles, videos, or roles. Use the <b>⠿</b> handle to drag things into a new order, and the <b>✕</b> to remove them.'},
+ {h:'4 · Links, thumbnails & videos',p:'Click <b>🔗 Links &amp; thumbnails</b>, then click a tile or a video box to set its image and link (your YouTube / Instagram).'},
+ {h:'5 · Undo & Preview',p:'Made a mistake? Hit <b>↶ Undo</b> (or ⌘/Ctrl-Z). Want to see what visitors see? Hit <b>👁 Preview</b>. When happy, click <b>Publish</b>. That\'s it — you\'re ready!'}
+];
+function buildTour(){var t=document.getElementById('tour');if(t)return t;t=document.createElement('div');t.id='tour';t.innerHTML='<div class="card"><h4 id="tH"></h4><p id="tP"></p><div class="row"><span class="dots" id="tD"></span><span><button class="sk" onclick="endTour()">Skip</button> <button id="tN" onclick="nextTour()">Next →</button></span></div></div>';document.body.appendChild(t);return t;}
+function startTour(){tstep=0;buildTour();renderTour();document.getElementById('tour').classList.add('open');}
+function renderTour(){var s=tour[tstep];document.getElementById('tH').innerHTML=s.h;document.getElementById('tP').innerHTML=s.p;document.getElementById('tD').textContent=(tstep+1)+' / '+tour.length;document.getElementById('tN').textContent=(tstep===tour.length-1)?'Got it ✓':'Next →';}
+function nextTour(){if(tstep<tour.length-1){tstep++;renderTour();}else endTour();}
+function endTour(){var t=document.getElementById('tour');if(t)t.classList.remove('open');try{localStorage.setItem('tour_seen','1');}catch(e){}}
+function maybeAutoTour(){try{if(!localStorage.getItem('tour_seen'))setTimeout(startTour,700);}catch(e){}}
+
+/* ===== accent colour presets ===== */
+function setAccent(hex,onacc,btn){pushUndo();document.documentElement.style.setProperty('--accent',hex);document.documentElement.style.setProperty('--cta',hex);document.documentElement.style.setProperty('--onacc',onacc);document.documentElement.style.setProperty('--ctatx',onacc);if(btn){document.querySelectorAll('.accdot').forEach(function(d){d.classList.remove('on');});btn.classList.add('on');}saveSoon();}
+
+/* ===== reset everything (clear all moves/resizes) ===== */
+function resetAll(){if(!confirm('Reset ALL moves, resizing and free positioning back to the clean layout? (Your text, images and links stay.)'))return;pushUndo();
+  document.querySelectorAll('.wrap [style]').forEach(function(el){
+    if(el.closest('#ebar,#sbar,#fbar,#selbox'))return;
+    ['transform','width','maxWidth','height','fontSize','textAlign'].forEach(function(p){el.style[p]='';});
+  });
+  document.querySelectorAll('.wrap>header,.wrap>section').forEach(function(s){s.style.textAlign='';var row=s.querySelector('.ctarow');if(row)row.style.justifyContent='';});
+  clearSel();hideFbar();saveSoon();}
+
+/* ===== inline image upload (no hosting; auto-resized data URL) ===== */
+var imgTarget=null, imgKind=null;
+function pickImage(target,kind){imgTarget=target;imgKind=kind;document.getElementById('imgpick').click();}
+document.getElementById('imgpick').addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f||!imgTarget)return;var rd=new FileReader();rd.onload=function(ev){var img=new Image();img.onload=function(){
+  var max=1280,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}
+  var cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+  var data=cv.toDataURL('image/jpeg',0.82);pushUndo();
+  if(imgKind==='tile'){var th=imgTarget.querySelector('.th');if(th){th.style.backgroundImage='url("'+data+'")';th.style.backgroundSize='cover';th.style.backgroundPosition='center';th.style.animation='none';}}
+  else{imgTarget.style.backgroundImage='url("'+data+'")';imgTarget.style.backgroundSize='cover';imgTarget.style.backgroundPosition='center';var ph=imgTarget.querySelector('.ph');if(ph)ph.style.display='none';}
+  saveSoon();};img.src=ev.target.result;};rd.readAsDataURL(f);e.target.value='';});
+
+/* ===== local auto-save (separate from publishing) ===== */
+var SAVE_KEY='aarti_portfolio_draft_v1';
+var saveT=null;
+function saveSoon(){if(saveT)clearTimeout(saveT);saveT=setTimeout(saveNow,800);}
+function saveNow(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({html:document.querySelector('.wrap').innerHTML,
+  light:document.body.classList.contains('light'),font:document.documentElement.style.getPropertyValue('--font'),
+  accent:document.documentElement.style.getPropertyValue('--accent'),onacc:document.documentElement.style.getPropertyValue('--onacc'),
+  t:Date.now()}));var s=document.getElementById('saveind');if(s)s.textContent='✓ saved';setTimeout(function(){if(s&&s.textContent==='✓ saved')s.textContent='';},1400);}catch(e){}}
+function cleanForSave(host){host.querySelectorAll('.arrangectl').forEach(function(e){e.remove();});host.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable');});}
+function maybeRestore(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return;var d=JSON.parse(raw);if(!d||!d.html)return;
+  var when=d.t?new Date(d.t):null;var ago=when?Math.round((Date.now()-d.t)/60000):0;
+  var msg='You have unsaved edits from '+(ago<1?'just now':ago+' min ago')+'. Restore them?';
+  if(confirm(msg)){document.querySelector('.wrap').innerHTML=d.html;
+    if(d.light)setTheme('light');if(d.font)setFont(d.font);
+    if(d.accent){document.documentElement.style.setProperty('--accent',d.accent);document.documentElement.style.setProperty('--cta',d.accent);if(d.onacc){document.documentElement.style.setProperty('--onacc',d.onacc);document.documentElement.style.setProperty('--ctatx',d.onacc);}}
+    if(document.body.classList.contains('editing'))document.querySelectorAll('.ed').forEach(function(e){e.contentEditable='true';});
+  }else{localStorage.removeItem(SAVE_KEY);}
+}catch(e){}}
+/* auto-save on edits + actions */
+document.addEventListener('input',function(e){if(e.target.closest&&e.target.closest('.ed'))saveSoon();});
+function clearDraft(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+
 /* publish */
 function openPub(){document.getElementById('pub').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
 function closePub(){document.getElementById('pub').classList.remove('open');}
 function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
-function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl').forEach(function(e){e.remove();});var sb=c.querySelector('#selbox');if(sb)sb.remove();var mt=c.querySelector('#movetip');if(mt)mt.remove();c.querySelectorAll('.gline,.aguide').forEach(function(e){e.remove();});c.querySelectorAll('.wrap>header,.wrap>section').forEach(function(e){e.style.outline='';});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit','arrange','moveedit');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
-async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok)ps('✓ Published! Live in about a minute.');else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
+function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx').forEach(function(e){e.remove();});['#selbox','#movetip','#fbar','#tour','#imgpick'].forEach(function(s){var el=c.querySelector(s);if(el)el.remove();});c.querySelectorAll('.gline,.aguide').forEach(function(e){e.remove();});c.querySelectorAll('.wrap>header,.wrap>section').forEach(function(e){e.style.outline='';});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit','arrange','moveedit','preview');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
+async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok){ps('✓ Published! Live in about a minute.');clearDraft();}else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
 </script>
 </body></html>
