@@ -124,7 +124,8 @@ body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mai
 .foot{font-size:var(--sm);color:var(--faint);padding:30px 0 56px;font-weight:500;}
 
 /* EDITOR */
-#ebar,#sbar,#pub.open{display:none;}
+#ebar,#sbar{display:none;}
+#pub{display:none;}
 body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
 #ebar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--panel);border-bottom:1px solid var(--line);align-items:center;gap:8px;padding:9px 16px;flex-wrap:wrap;}
 #ebar .l{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
