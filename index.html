@@ -1,267 +1,311 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aarti Boriya — Creative Content Head</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Archivo:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#141210;--panel:#1D1916;--panel-2:#231E19;--line:#2E2820;--text:#F1E9DC;--soft:#B6A892;--dim:#8B8071;--accent:#E8A33D;--accent-2:#C7592F;--bodyfont:"Inter",sans-serif;--dispfont:"Fraunces",serif;}
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--bodyfont);-webkit-font-smoothing:antialiased;}
-  a{color:inherit;text-decoration:none;}
-  #stage{position:relative;width:100%;overflow:hidden;}
-  body.editor #stage{overflow-x:auto;}
-  #canvas{position:absolute;left:0;top:0;width:1180px;min-height:1240px;}
-  .block{position:absolute;box-sizing:border-box;line-height:1.5;}
-  body.editor .block{cursor:grab;}
-  body.editor .block.editing{cursor:text;}
-  .block.sel{outline:2px solid var(--accent);outline-offset:2px;}
-  .handle{position:absolute;width:13px;height:13px;background:var(--accent);border:2px solid #fff;border-radius:50%;z-index:9999;}
-  .handle.nw{left:-7px;top:-7px;cursor:nwse-resize;}.handle.n{left:calc(50% - 6px);top:-7px;cursor:ns-resize;}
-  .handle.ne{right:-7px;top:-7px;cursor:nesw-resize;}.handle.e{right:-7px;top:calc(50% - 6px);cursor:ew-resize;}
-  .handle.se{right:-7px;bottom:-7px;cursor:nwse-resize;}.handle.s{left:calc(50% - 6px);bottom:-7px;cursor:ns-resize;}
-  .handle.sw{left:-7px;bottom:-7px;cursor:nesw-resize;}.handle.w{left:-7px;top:calc(50% - 6px);cursor:ew-resize;}
-  .guide{position:absolute;background:var(--accent);z-index:9998;pointer-events:none;display:none;opacity:.9;}
-  .guide.v{width:1px;top:0;bottom:0;}.guide.h{height:1px;left:0;right:0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font:"Plus Jakarta Sans",sans-serif;
+  /* FOUR sizes only */
+  --xl:clamp(38px,5.4vw,56px); --lg:27px; --md:16px; --sm:12px;
+  /* Charcoal & Coral (default) */
+  --bg:#161519;--ink:#ECEAE6;--muted:#9a948c;--faint:#615c56;--line:#2a2930;--panel:#1d1c22;--accent:#E0654E;--onacc:#161519;--cta:#E0654E;--ctatx:#161519;--spotbase:#827c74;--spotlit:#ECEAE6;
+}
+body.light{--bg:#F7F5F2;--ink:#1A1A1A;--muted:#6a655c;--faint:#b3ab9e;--line:#e6e0d6;--panel:#FFFFFF;--accent:#B5774C;--onacc:#fff;--cta:#1A1A1A;--ctatx:#fff;--spotbase:#a8a298;--spotlit:#1A1A1A;}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background .25s,color .25s;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 44px;}
+body.editing .ed{outline:1px dashed var(--accent);outline-offset:3px;border-radius:3px;}
 
-  .b-photo{border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 40px -12px rgba(0,0,0,.5);display:grid;place-items:center;color:rgba(0,0,0,.55);font-size:11px;font-weight:600;overflow:hidden;}
-  .b-name{font-family:var(--dispfont);font-weight:600;font-size:34px;letter-spacing:-.015em;line-height:1;}
-  .b-role{color:var(--accent);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;}
-  .b-hook{font-family:var(--dispfont);font-weight:600;font-size:28px;line-height:1.12;}
-  .b-hook em{font-style:normal;color:var(--accent);}
-  .b-sub{font-size:14px;color:var(--soft);line-height:1.55;}
-  .b-stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;}
-  .b-stat b{font-family:var(--dispfont);font-size:22px;color:var(--accent);line-height:1;}
-  .b-stat span{font-size:11px;color:var(--soft);margin-top:5px;line-height:1.3;}
-  .b-soc{border:1px solid var(--line);background:var(--panel);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--accent);}
-  .b-soc svg{width:22px;height:22px;}.b-soc small{font-size:10px;color:var(--dim);}
-  .b-tile{border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 14px 30px -20px rgba(0,0,0,.8);}
-  .b-tile .thumb{position:absolute;inset:0;background-size:220% 220%;animation:pan 8s ease-in-out infinite alternate;}
-  @keyframes pan{0%{background-position:0 50%}100%{background-position:100% 50%}}
-  @media (prefers-reduced-motion:reduce){.thumb{animation:none;}}
-  .b-tile .cap{position:absolute;left:0;right:0;bottom:0;padding:20px 10px 9px;color:#fff;font-size:12px;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,.82));}
-  .b-tile .badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-family:"Space Mono",monospace;font-size:10px;padding:2px 6px;border-radius:5px;}
-  .b-h2{font-family:"Space Mono",monospace;font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
-  .b-text{font-size:14px;line-height:1.7;color:#D6CCBD;}
-  .b-text b{color:var(--text);}.b-text em{color:var(--accent);font-style:normal;}
-  .b-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;}
-  .b-cta{background:var(--accent);color:#141210;font-weight:600;font-size:13.5px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;}
-  .g1{background-image:linear-gradient(120deg,#FF8A5B,#C7592F);}.g2{background-image:linear-gradient(120deg,#5B6CFF,#9B4DFF);}
-  .g3{background-image:linear-gradient(120deg,#13C2A3,#1E7BB8);}.g4{background-image:linear-gradient(120deg,#E8A33D,#C7592F);}
-  .g5{background-image:linear-gradient(120deg,#7A5CFF,#3A4FE0);}.g6{background-image:linear-gradient(120deg,#FF6B5C,#B5325F);}
+/* TYPE ROLES — only 4 sizes, vary weight/colour */
+.t-xl{font-size:var(--xl);font-weight:800;letter-spacing:-.03em;line-height:1.04;}
+.t-lg{font-size:var(--lg);font-weight:800;letter-spacing:-.02em;line-height:1.1;}
+.t-md{font-size:var(--md);font-weight:400;}
+.t-sm{font-size:var(--sm);font-weight:600;letter-spacing:.04em;}
 
-  #ebar,#inspector,#pubModal,#fab{display:none;}
-  body.editor #ebar,body.editor #fab{display:flex;}
-  body.editor.has-sel #inspector{display:block;}
-  #ebar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(18,16,14,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);align-items:center;gap:9px;padding:9px 16px;flex-wrap:wrap;}
-  #ebar .ttl{font-family:"Space Mono",monospace;font-size:12px;color:var(--accent);font-weight:700;}
-  .ebtn{font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);cursor:pointer;}
-  .ebtn:hover{border-color:var(--accent);}.ebtn.pri{background:var(--accent);color:#141210;border-color:var(--accent);}
-  #inspector{position:fixed;top:54px;right:14px;z-index:1000;width:230px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 20px 50px -18px rgba(0,0,0,.7);}
-  #inspector h4{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;}
-  .row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:12px;color:var(--soft);}
-  .row label{flex:1;}
-  .row input[type=color]{width:30px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer;padding:0;}
-  .row input[type=text]{flex:1.6;min-width:0;font-family:inherit;font-size:12px;padding:5px 7px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);}
-  .row select{flex:1.6;font-family:inherit;font-size:12px;padding:5px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);}
-  .mini{min-width:28px;height:26px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);cursor:pointer;font-weight:700;font-size:13px;padding:0 7px;}
-  #inspector .del{width:100%;margin-top:6px;background:var(--accent-2);color:#fff;border:none;border-radius:8px;padding:8px;font-weight:600;cursor:pointer;}
-  #fab{position:fixed;right:18px;bottom:18px;z-index:1000;gap:8px;}
-  #pubModal.open{display:flex;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px;}
-  #pubModal .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:440px;width:100%;}
-  #pubModal h3{font-family:var(--dispfont);font-size:21px;margin-bottom:6px;}
-  #pubModal p{font-size:13px;color:var(--soft);line-height:1.55;margin-bottom:14px;}
-  #pubModal .f{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
-  #pubModal .f label{font-size:11px;color:var(--dim);}
-  #pubModal .f input{font-family:inherit;font-size:13px;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);}
-  #pubModal .acts{display:flex;gap:10px;margin-top:6px;}
-  #pubModal .status{font-size:12px;color:var(--accent);margin-top:12px;min-height:16px;line-height:1.4;word-break:break-word;}
-</style>
-</head>
+/* TOP */
+.top{display:flex;justify-content:space-between;align-items:flex-start;padding:26px 0 0;gap:20px;flex-wrap:wrap;}
+.idn{font-size:var(--md);font-weight:600;}
+.idn .r{color:var(--muted);font-weight:500;}
+.soc{display:flex;gap:8px;}
+.soc a{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0 6px;color:var(--muted);transition:color .15s;}
+.soc a:hover{color:var(--accent);}
+.soc .ic{width:38px;height:38px;border:1px solid var(--line);border-radius:11px;display:grid;place-items:center;}
+.soc svg{width:18px;height:18px;}
+.soc small{font-size:10px;font-weight:500;white-space:nowrap;}
+
+/* HERO */
+.hero{min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center;padding:22px 0 22px;}
+.hmain{display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center;}
+.kick{color:var(--accent);margin-bottom:14px;}
+.spot{position:relative;cursor:default;max-width:none;}
+.spot .base,.spot .lit{font-size:var(--xl);font-weight:800;letter-spacing:-.03em;line-height:1.04;}
+.spot .base{color:var(--spotbase);}
+.spot .lit{position:absolute;inset:0;color:var(--spotlit);clip-path:circle(0px at 50% 50%);}
+.spot .lit em{font-style:normal;color:var(--accent);}
+.spot.touch .lit{clip-path:none;}
+.sub{color:var(--muted);margin-top:18px;max-width:46ch;line-height:1.6;}
+.cta{display:inline-block;margin-top:22px;background:var(--cta);color:var(--ctatx);font-weight:600;font-size:var(--md);padding:12px 22px;border-radius:10px;}
+
+.hside{display:flex;flex-direction:column;gap:24px;}
+.wf{border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;background:var(--panel);}
+.wf .bars{display:flex;align-items:center;gap:3px;height:54px;cursor:ew-resize;}
+.wf .bars i{flex:1;background:var(--ink);transform:scaleY(.18);transform-origin:center;height:100%;transition:transform .14s,background .14s;}
+.wf .bars i.hot{background:var(--accent);}
+.wf .lab{font-size:var(--sm);color:var(--muted);margin-top:11px;}
+.wf .lab b{color:var(--accent);font-weight:700;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.stat b{font-size:var(--lg);font-weight:800;letter-spacing:-.02em;display:block;line-height:1;}
+.stat span{font-size:var(--sm);color:var(--muted);display:block;margin-top:6px;font-weight:500;line-height:1.35;}
+.stat.proof b{border-bottom:2px dashed var(--accent);cursor:help;position:relative;display:inline-block;}
+.stat .pop{position:absolute;left:0;top:120%;background:var(--ink);color:var(--bg);font-size:var(--sm);font-weight:400;padding:10px 13px;border-radius:10px;width:215px;opacity:0;transform:translateY(5px);transition:.2s;pointer-events:none;z-index:5;line-height:1.5;}
+.stat.proof:hover .pop{opacity:1;transform:translateY(0);}
+.scrollcue{text-align:center;margin-top:30px;color:var(--faint);font-size:var(--sm);}
+.scrollcue .a{display:inline-block;animation:bob 1.6s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.scrollcue .a{animation:none;}}
+
+/* SECTIONS */
+.sec{padding:54px 0;border-top:1px solid var(--line);}
+.h2{font-size:var(--sm);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:24px;}
+
+/* now playing */
+.player{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;}
+.player .art{width:80px;height:80px;border-radius:10px;flex:none;background:linear-gradient(135deg,var(--accent),#9B3D5E);position:relative;overflow:hidden;}
+.player .art .eq{position:absolute;bottom:8px;left:8px;right:8px;display:flex;gap:3px;align-items:flex-end;height:24px;}
+.player .art .eq i{flex:1;background:rgba(255,255,255,.85);animation:eqa 1s infinite alternate;}
+@keyframes eqa{0%{transform:scaleY(.2)}100%{transform:scaleY(1)}}
+.player .np .k{font-size:var(--sm);color:var(--accent);font-weight:600;}
+.player .np .ti{font-size:var(--md);font-weight:600;margin:4px 0 9px;}
+.player .np .bar{height:4px;width:220px;max-width:46vw;background:var(--line);border-radius:3px;overflow:hidden;}
+.player .np .bar span{display:block;height:100%;width:58%;background:var(--accent);}
+.tracks{margin-top:8px;}
+.tracks button{width:100%;text-align:left;font-family:var(--font);font-size:var(--md);color:var(--ink);background:none;border:none;border-top:1px solid var(--line);padding:12px 4px;cursor:pointer;display:flex;justify-content:space-between;font-weight:500;}
+.tracks button:hover{color:var(--accent);}
+.tracks button .d{font-size:var(--sm);color:var(--muted);font-weight:500;}
+
+/* work */
+.work{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.tile{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+.th{position:absolute;inset:0;background-size:200% 200%;animation:pan 9s infinite alternate;}
+@keyframes pan{0%{background-position:0 50%}100%{background-position:100% 50%}}
+.tile .cp{position:absolute;left:11px;bottom:9px;color:#fff;font-weight:600;font-size:var(--md);z-index:2;}
+.tile .res{position:absolute;inset:0;background:rgba(20,18,17,.92);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:.22s;text-align:center;padding:10px;}
+.tile:hover .res{opacity:1;}
+.tile .res b{font-weight:800;font-size:var(--lg);color:#E0654E;}
+.tile .res span{font-size:var(--sm);color:#ddd;margin-top:5px;}
+.g1{background-image:linear-gradient(120deg,#E0654E,#9B3D5E);}.g2{background-image:linear-gradient(120deg,#3E7CA8,#2A4E78);}.g3{background-image:linear-gradient(120deg,#3FA890,#1E6E62);}.g4{background-image:linear-gradient(120deg,#C98A4E,#9B5E2E);}.g5{background-image:linear-gradient(120deg,#7A6CCF,#4A3E9E);}.g6{background-image:linear-gradient(120deg,#5B86C9,#324E78);}
+.note{font-size:var(--sm);color:var(--faint);margin-top:12px;font-weight:500;}
+
+/* about */
+.lead{font-size:var(--lg);font-weight:700;line-height:1.3;letter-spacing:-.015em;max-width:24ch;}
+.lead em{font-style:normal;color:var(--accent);}
+.body{font-size:var(--md);line-height:1.78;color:var(--muted);max-width:64ch;margin-top:18px;}
+.body .rev{color:var(--ink);font-weight:600;border-bottom:2px dashed var(--accent);cursor:help;position:relative;}
+.body .rev .pop{position:absolute;left:0;bottom:135%;background:var(--ink);color:var(--bg);font-size:var(--sm);font-weight:400;padding:9px 13px;border-radius:10px;width:230px;opacity:0;transition:.2s;pointer-events:none;z-index:5;line-height:1.5;}
+.body .rev:hover .pop{opacity:1;}
+
+/* accordion */
+.acc .item{border-top:1px solid var(--line);}
+.acc .hd{display:grid;grid-template-columns:128px 1fr 20px;align-items:center;gap:18px;padding:17px 2px;cursor:pointer;}
+.acc .yr{font-size:var(--sm);color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;text-align:right;}
+.acc .ti{font-size:var(--md);font-weight:600;color:var(--ink);}
+.acc .ar{justify-self:end;color:var(--faint);transition:transform .2s;font-size:var(--sm);}
+.acc .item.open .ar{transform:rotate(180deg);}
+.acc .bd{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.acc .bd .inr{padding:0 0 18px 136px;font-size:var(--md);color:var(--muted);line-height:1.65;}
+.acc .item.open .bd{max-height:220px;}
+.acc .res{display:inline-block;background:var(--accent);color:var(--onacc);font-size:var(--sm);font-weight:600;padding:3px 9px;border-radius:6px;margin-top:8px;}
+
+.contact{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+.contact .big{font-size:var(--lg);font-weight:800;letter-spacing:-.02em;line-height:1.06;}
+.contact .big em{font-style:normal;color:var(--accent);}
+.contact .mail{font-size:var(--md);border-bottom:2px solid var(--accent);padding-bottom:3px;}
+.foot{font-size:var(--sm);color:var(--faint);padding:30px 0 56px;font-weight:500;}
+
+/* EDITOR */
+#ebar,#sbar,#pub.open{display:none;}
+body.editor #ebar{display:flex;} body.editor.editing #sbar{display:flex;}
+#ebar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--panel);border-bottom:1px solid var(--line);align-items:center;gap:8px;padding:9px 16px;flex-wrap:wrap;}
+#ebar .l{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+.eb{font-family:var(--font);font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;}
+.eb.on{background:var(--accent);color:var(--onacc);border-color:var(--accent);}
+.eb.pri{background:var(--accent);color:var(--onacc);border-color:var(--accent);margin-left:auto;}
+#sbar{position:fixed;top:46px;left:0;right:0;z-index:999;background:var(--ink);color:var(--bg);align-items:center;gap:8px;padding:8px 16px;flex-wrap:wrap;}
+#sbar .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
+#sbar button,#sbar select{font-family:var(--font);font-size:12px;font-weight:600;padding:5px 9px;border-radius:7px;border:1px solid rgba(255,255,255,.25);background:transparent;color:var(--bg);cursor:pointer;}
+#sbar input[type=color]{width:26px;height:26px;border:none;background:none;cursor:pointer;}
+#pub.open{display:flex;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:20px;}
+#pub .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:430px;width:100%;}
+#pub h3{font-size:var(--md);font-weight:700;margin-bottom:6px;}
+#pub p{font-size:var(--sm);color:var(--muted);line-height:1.5;margin-bottom:14px;}
+#pub .f{display:flex;flex-direction:column;gap:4px;margin-bottom:9px;}
+#pub .f label{font-size:11px;color:var(--faint);}
+#pub .f input{font-family:var(--font);font-size:13px;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);}
+#pub .st{font-size:var(--sm);color:var(--accent);margin-top:10px;min-height:15px;word-break:break-word;}
+
+@media(max-width:820px){.wrap{padding:0 22px;}.hero{min-height:auto;padding-top:30px;}.hmain{grid-template-columns:1fr;gap:26px;}.stats{gap:14px;}.work{grid-template-columns:1fr 1fr;}.acc .hd{grid-template-columns:92px 1fr 20px;gap:10px;}.acc .bd .inr{padding-left:102px;}}
+</style></head>
 <body>
-  <div id="ebar">
-    <span class="ttl">CANVAS</span>
-    <button class="ebtn" onclick="addBlock('text')">+ Text</button>
-    <button class="ebtn" onclick="addBlock('heading')">+ Heading</button>
-    <button class="ebtn" onclick="addBlock('box')">+ Box</button>
-    <button class="ebtn" onclick="addBlock('image')">+ Image</button>
-    <button class="ebtn" onclick="addBlock('icon')">+ Icon</button>
-    <button class="ebtn" style="margin-left:auto" onclick="preview()">Preview</button>
-    <button class="ebtn pri" onclick="openPub()">Publish ▸</button>
-  </div>
 
-  <div id="inspector">
-    <h4>Selected block</h4>
-    <div class="row"><label>Text colour</label><input type="color" id="i_color" oninput="styleSel('color',this.value)"></div>
-    <div class="row"><label>Fill</label><input type="color" id="i_bg" oninput="styleSel('background',this.value)"></div>
-    <div class="row"><label>Font</label><select id="i_font" onchange="styleSel('fontFamily',this.value)">
-      <option value='"Inter",sans-serif'>Inter</option><option value='"Fraunces",serif'>Fraunces</option>
-      <option value='"Playfair Display",serif'>Playfair</option><option value='"Space Mono",monospace'>Mono</option><option value='Georgia,serif'>Georgia</option></select></div>
-    <div class="row"><label>Size</label><button class="mini" onclick="bump('fontSize',-2)">A−</button><button class="mini" onclick="bump('fontSize',2)">A+</button></div>
-    <div class="row"><label>Round</label><button class="mini" onclick="bump('borderRadius',-4)">−</button><button class="mini" onclick="bump('borderRadius',4)">+</button></div>
-    <div class="row"><label>Link</label><input type="text" id="i_href" placeholder="https://…" oninput="setHref(this.value)"></div>
-    <div class="row"><label style="flex:0">Words:</label><button class="mini" onclick="fmt('bold')" style="font-weight:800">B</button><button class="mini" onclick="fmt('italic')" style="font-style:italic">i</button><input type="color" oninput="fmt('foreColor',this.value)" style="width:30px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0"></div>
-    <div class="row"><label>Layer</label><button class="mini" onclick="layer(1)">Front</button><button class="mini" onclick="layer(-1)">Back</button><button class="mini" onclick="dup()">Copy</button></div>
-    <button class="del" onclick="delSel()">Delete block</button>
-  </div>
+<!-- EDITOR -->
+<div id="ebar"><span class="l">Editor</span>
+  <button class="eb" id="bEdit" onclick="toggleEdit()">✎ Edit text</button>
+  <span class="l">Theme</span><button class="eb on" id="thD" onclick="setTheme('dark')">Charcoal</button><button class="eb" id="thL" onclick="setTheme('light')">Light</button>
+  <span class="l">Font</span><select class="eb" onchange="setFont(this.value)"><option value='"Plus Jakarta Sans",sans-serif'>Jakarta</option><option value='"Hanken Grotesk",sans-serif'>Hanken</option><option value='"Archivo",sans-serif'>Archivo</option><option value='"Manrope",sans-serif'>Manrope</option></select>
+  <button class="eb pri" onclick="openPub()">Publish ▸</button>
+</div>
+<div id="sbar"><span class="l">Selected text:</span>
+  <select onmousedown="event.preventDefault()" onchange="fmt('fontName',this.value)"><option value="">Font…</option><option value="Plus Jakarta Sans">Jakarta</option><option value="Hanken Grotesk">Hanken</option><option value="Archivo">Archivo</option><option value="Manrope">Manrope</option></select>
+  <input type="color" oninput="fmt('foreColor',this.value)">
+  <button onmousedown="event.preventDefault()" onclick="fmt('bold')" style="font-weight:800">B</button>
+  <button onmousedown="event.preventDefault()" onclick="fmt('italic')" style="font-style:italic">i</button>
+  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','2')">A−</button>
+  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','4')">A</button>
+  <button onmousedown="event.preventDefault()" onclick="fmt('fontSize','6')">A+</button>
+</div>
+<div id="pub"><div class="card"><h3>Publish to your live site</h3>
+  <p>One-time: paste a GitHub fine-grained token (repo <b>Experiments</b>, Contents: Read &amp; write). Saved in this browser only.</p>
+  <div class="f"><label>Username</label><input id="f_owner" value="AartiBalvantrai"></div>
+  <div class="f"><label>Repository</label><input id="f_repo" value="Experiments"></div>
+  <div class="f"><label>Branch</label><input id="f_branch" value="main"></div>
+  <div class="f"><label>Path</label><input id="f_path" value="index.html"></div>
+  <div class="f"><label>Token</label><input id="f_token" type="password" placeholder="github_pat_…"></div>
+  <div style="display:flex;gap:10px;margin-top:6px;"><button class="eb pri" style="margin:0" onclick="publish()">Save &amp; publish</button><button class="eb" onclick="closePub()">Cancel</button></div>
+  <div class="st" id="pst"></div>
+</div></div>
 
-  <div id="fab"><button class="ebtn" onclick="deselect()">Deselect</button></div>
+<div class="wrap">
+  <header class="top">
+    <div class="idn ed">Aarti Boriya <span class="r">— Creative Content Head</span></div>
+    <nav class="soc">
+      <a href="#"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span><small class="ed">@aarti.boriya</small></a>
+      <a href="#"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5A2.7 2.7 0 0 0 2.4 7.2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9C22 15.1 22 12 22 12s0-3.1-.4-4.8zM10 15V9l5 3-5 3z"/></svg></span><small class="ed">@aartiboriya</small></a>
+      <a href="https://twitter.com/Aartib"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.2L22.8 21h-6.6l-5.2-6.8L5.1 21H1.8l7.7-8.8L1.5 3h6.8l4.7 6.2L18.2 3z"/></svg></span><small class="ed">@Aartib</small></a>
+      <a href="mailto:aarti.boriya@protonmail.com"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><small class="ed">Email</small></a>
+    </nav>
+  </header>
 
-  <div id="pubModal"><div class="card">
-    <h3>Publish to your live site</h3>
-    <p>One-time: paste a GitHub token (Settings ▸ Developer settings ▸ Fine-grained tokens ▸ repo <b>Experiments</b> ▸ Contents: Read &amp; write). Saved in this browser only. Then just hit publish anytime.</p>
-    <div class="f"><label>GitHub username</label><input id="f_owner" value="AartiBalvantrai"></div>
-    <div class="f"><label>Repository</label><input id="f_repo" value="Experiments"></div>
-    <div class="f"><label>Branch</label><input id="f_branch" value="main"></div>
-    <div class="f"><label>File path</label><input id="f_path" value="index.html"></div>
-    <div class="f"><label>Access token</label><input id="f_token" type="password" placeholder="github_pat_…"></div>
-    <div class="acts"><button class="ebtn pri" onclick="publish()">Save &amp; publish</button><button class="ebtn" onclick="closePub()">Cancel</button></div>
-    <div class="status" id="pubStatus"></div>
-  </div></div>
+  <section class="hero">
+    <div class="hmain">
+      <div>
+        <div class="kick t-sm ed">Content systems &amp; storytelling — early-stage startups</div>
+        <div class="spot" id="spot">
+          <div class="base ed">I build the content engine<br>founders grow&nbsp;on.</div>
+          <div class="lit" aria-hidden="true">I build the content <em>engine</em><br>founders grow&nbsp;on.</div>
+        </div>
+        <div class="sub t-md ed">From narrative to channels to cadence, I turn scattered attention into a system that compounds — then build the team to run it. Fifteen years of it, from national media to YC- and Khosla-backed startups.</div>
+        <a class="cta ed" href="mailto:aarti.boriya@protonmail.com">Work with me →</a>
+      </div>
+      <div class="hside">
+        <div class="wf">
+          <div class="bars" id="wf"></div>
+          <div class="lab" id="wfLab"><b>2006</b> — drag across to move through my career →</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><b data-to="4" data-suf="×">0</b><span class="ed">Instagram growth in 4 months</span></div>
+          <div class="stat"><b data-to="28" data-pre="+" data-suf="%">0</b><span class="ed">YouTube CTR lift in 3 months</span></div>
+          <div class="stat"><b data-to="700" data-suf="+">0</b><span class="ed">hours of content produced</span></div>
+          <div class="stat proof"><b data-to="500" data-suf="+">0</b><span class="ed">interviews conducted</span><span class="pop">Including the Indian Prime Minister, a Gujarat Chief Minister, and Bollywood A-listers.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="scrollcue"><span class="a">↓</span> &nbsp;scroll for work, story &amp; experience</div>
+  </section>
 
-  <div id="stage"><div id="canvas">
-    <div class="guide v" id="gv"></div><div class="guide h" id="gh"></div>
+  <section class="sec">
+    <div class="h2 ed">Now playing</div>
+    <div class="player">
+      <div class="art"><div class="eq"><i style="animation-delay:0s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.22s"></i></div></div>
+      <div class="np"><div class="k">▶ CURRENTLY</div><div class="ti" id="npTitle">Head of Content · upliance.ai</div><div class="bar"><span></span></div></div>
+    </div>
+    <div class="tracks">
+      <button onclick="setNP(this,'Head of Content · upliance.ai')"><span>Head of Content · upliance.ai</span><span class="d">2024 – Present</span></button>
+      <button onclick="setNP(this,'Consultant · IIMA Ventures')"><span>Consultant · IIMA Ventures</span><span class="d">2025</span></button>
+      <button onclick="setNP(this,'Content &amp; Community · Criya (YC)')"><span>Content &amp; Community · Criya (YC)</span><span class="d">2023</span></button>
+      <button onclick="setNP(this,'Prime-time Host &amp; Producer · Radio City')"><span>Prime-time Host &amp; Producer · Radio City</span><span class="d">2015 – 2020</span></button>
+    </div>
+  </section>
 
-    <div class="block b-photo" style="left:0;top:30px;width:110px;height:110px;">your photo</div>
-    <div class="block b-name" style="left:130px;top:36px;width:380px;">Aarti Boriya</div>
-    <div class="block b-role" style="left:130px;top:84px;width:380px;">Creative Content Head · Bengaluru</div>
+  <section class="sec">
+    <div class="h2 ed">Selected work</div>
+    <div class="work">
+      <div class="tile"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b>4×</b><span>Instagram in 4 months</span></div></div>
+      <div class="tile"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b>~180</b><span>leaders convened</span></div></div>
+      <div class="tile"><div class="th g3"></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b>700+</b><span>hours of content</span></div></div>
+      <div class="tile"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b>EC</b><span>voter awareness, Gujarat</span></div></div>
+      <div class="tile"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b>+28%</b><span>YouTube CTR</span></div></div>
+      <div class="tile"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b>300K</b><span>audience reached daily</span></div></div>
+    </div>
+    <p class="note ed">↑ placeholders — we'll wire your real YouTube / Instagram pieces in next.</p>
+  </section>
 
-    <a class="block b-soc" data-href="#" style="left:830px;top:30px;width:80px;height:74px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg><small>Instagram</small></a>
-    <a class="block b-soc" data-href="#" style="left:920px;top:30px;width:80px;height:74px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5A2.7 2.7 0 0 0 2.4 7.2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9C22 15.1 22 12 22 12s0-3.1-.4-4.8zM10 15V9l5 3-5 3z"/></svg><small>YouTube</small></a>
-    <a class="block b-soc" data-href="https://twitter.com/Aartib" style="left:1010px;top:30px;width:80px;height:74px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.2L22.8 21h-6.6l-5.2-6.8L5.1 21H1.8l7.7-8.8L1.5 3h6.8l4.7 6.2L18.2 3z"/></svg><small>@Aartib</small></a>
-    <a class="block b-soc" data-href="mailto:aarti.boriya@protonmail.com" style="left:1100px;top:30px;width:80px;height:74px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><small>Email</small></a>
+  <section class="sec">
+    <div class="h2 ed">About</div>
+    <div class="lead ed">I help founders turn a great product into a story people <em>actually hear.</em></div>
+    <div class="body ed">I build the content system — the narrative, the channels, the cadence, and the team to run it — and I work out where a founder's audience is genuinely paying attention, then point everything there. My instinct for attention was built at scale: across national radio I produced 700+ hours of content and conducted <span class="rev">500+ interviews<span class="pop">The Indian PM, a Gujarat CM, and Bollywood's biggest names.</span></span>, learning to hold an audience in real time. Today I bring that to startups — at Criya (YC) I built content and community IP for founders, and at upliance.ai I lead AI content and influencer strategy, growing Instagram 4× in four months.</div>
+  </section>
 
-    <div class="block b-hook" style="left:0;top:190px;width:360px;">I make brands worth <em>listening to.</em></div>
-    <div class="block b-sub" style="left:0;top:300px;width:360px;">Fifteen years from prime-time radio to AI startups — turning attention into loyalty.</div>
-    <div class="block b-stat" style="left:0;top:380px;width:172px;height:72px;"><b>700+</b><span>hours of original content on air</span></div>
-    <div class="block b-stat" style="left:188px;top:380px;width:172px;height:72px;"><b>500+</b><span>interviews, incl. the Indian PM</span></div>
-    <div class="block b-stat" style="left:0;top:462px;width:172px;height:72px;"><b>4×</b><span>Instagram growth in 4 months</span></div>
-    <div class="block b-stat" style="left:188px;top:462px;width:172px;height:72px;"><b>300K</b><span>daily prime-time listeners</span></div>
-    <a class="block b-cta" data-href="mailto:aarti.boriya@protonmail.com" style="left:0;top:556px;width:150px;height:42px;">Get in touch</a>
+  <section class="sec">
+    <div class="h2 ed">Experience</div>
+    <div class="acc">
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</div></div></div>
+      <div class="item open"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.<br><span class="res">Instagram 4× in 4 months · YouTube CTR +28%</span></div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.<br><span class="res">300K daily listeners · +15% year one</span></div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</div></div></div>
+      <div class="item"><div class="hd" onclick="this.parentElement.classList.toggle('open')"><span class="yr">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</div></div></div>
+    </div>
+  </section>
 
-    <div class="block b-tile" style="left:410px;top:190px;width:240px;height:135px;"><div class="thumb g1"></div><span class="badge">02:14</span><div class="cap">Tech Talk</div></div>
-    <div class="block b-tile" style="left:666px;top:190px;width:240px;height:135px;"><div class="thumb g2"></div><span class="badge">01:48</span><div class="cap">Radio for Change</div></div>
-    <div class="block b-tile" style="left:922px;top:190px;width:240px;height:135px;"><div class="thumb g3"></div><span class="badge">00:46</span><div class="cap">Election Commission appeal</div></div>
-    <div class="block b-tile" style="left:410px;top:341px;width:240px;height:135px;"><div class="thumb g4"></div><span class="badge">03:02</span><div class="cap">CriyaCon 2023</div></div>
-    <div class="block b-tile" style="left:666px;top:341px;width:240px;height:135px;"><div class="thumb g5"></div><span class="badge">01:10</span><div class="cap">upliance.ai brand film</div></div>
-    <div class="block b-tile" style="left:922px;top:341px;width:240px;height:135px;"><div class="thumb g6"></div><span class="badge">00:58</span><div class="cap">Morning prime-time show</div></div>
-
-    <div class="block b-h2" style="left:0;top:600px;width:300px;">About</div>
-    <div class="block b-text" style="left:0;top:632px;width:1160px;">Across Radio Mirchi, Radio One and Radio City I produced 700+ hours of original content, hosted prime-time to 300,000 listeners, and interviewed 500+ guests — from the Indian Prime Minister to Bollywood's biggest names. I built IPs like <em>Tech Talk</em> and <em>Radio for Change</em>, and helped the Election Commission move voters in Gujarat. Then I brought that instinct online: at Criya (a San Francisco YC startup) I co-built content and community IP for founders; at upliance.ai I lead AI content and influencer strategy — growing Instagram 4× in four months and lifting YouTube CTR 28% — while shaping a new multi-product brand. Sharp enough to convert, human enough to remember.</div>
-
-    <div class="block b-h2" style="left:0;top:790px;width:300px;">Career</div>
-    <div class="block b-text" style="left:0;top:822px;width:1160px;"><b>2025 — Consultant, IIMA Ventures.</b> Content masterclass for 40+ fintech &amp; climatetech startups.<br><b>2024–Now — Head of Content, upliance.ai.</b> Instagram 4× in 4 months, YouTube CTR +28%.<br><b>2023 — Content &amp; Community, Criya.co (YC, SF).</b> Co-created accelerators; ran CriyaCon (~180 leaders).<br><b>2015–2020 — Prime-time Host &amp; Producer, Radio City.</b> 700+ hours; 500+ interviews incl. the PM.<br><b>2009–2014 — Host &amp; Client Solutions, Radio One.</b> Branded content; ~20% revenue growth.<br><b>2006–2008 — Prime-time Host, Radio Mirchi.</b> Promoted from assistant to host in 3 months.</div>
-
-    <div class="block b-box" style="left:0;top:1010px;width:1160px;height:84px;"></div>
-    <div class="block b-hook" style="left:24px;top:1032px;width:600px;font-size:22px;">Let's make something <em>worth listening to.</em></div>
-    <a class="block b-cta" data-href="mailto:aarti.boriya@protonmail.com" style="left:900px;top:1041px;width:240px;height:42px;">aarti.boriya@protonmail.com</a>
-    <div class="block b-text" style="left:0;top:1130px;width:400px;font-size:12px;color:var(--dim);">© 2026 Aarti Boriya</div>
-  </div></div>
+  <section class="sec contact">
+    <div class="big ed">Got a product, <em>no story yet?</em></div>
+    <a class="mail ed" href="mailto:aarti.boriya@protonmail.com">aarti.boriya@protonmail.com</a>
+  </section>
+  <div class="foot ed">© 2026 Aarti Boriya · Bengaluru</div>
+</div>
 
 <script>
-  var canvas=document.getElementById('canvas'),stage=document.getElementById('stage'),gv=document.getElementById('gv'),gh=document.getElementById('gh');
-  var sel=null,GRID=10,SNAP=6,CW=1180;
-  function isEditor(){return document.body.classList.contains('editor');}
+/* spotlight */
+var spot=document.getElementById('spot'),lit=spot.querySelector('.lit');
+if(window.matchMedia&&window.matchMedia('(hover:none)').matches){spot.classList.add('touch');}
+else{spot.addEventListener('mousemove',function(e){var r=spot.getBoundingClientRect();lit.style.clipPath='circle(140px at '+(e.clientX-r.left)+'px '+(e.clientY-r.top)+'px)';});
+spot.addEventListener('mouseleave',function(){lit.style.clipPath='circle(0px at 50% 50%)';});}
 
-  /* responsive scaling (view mode only) */
-  function layout(){
-    if(isEditor()){canvas.style.transform='none';canvas.style.left='0';stage.style.height=canvas.offsetHeight+'px';}
-    else{var a=stage.clientWidth,s=Math.min(1,a/CW);canvas.style.transformOrigin='top left';canvas.style.transform='scale('+s+')';canvas.style.left=Math.max(0,(a-CW*s)/2)+'px';stage.style.height=(canvas.offsetHeight*s)+'px';}
-  }
-  window.addEventListener('resize',layout);
+/* waveform career scrub */
+var wf=document.getElementById('wf');for(var i=0;i<46;i++){var b=document.createElement('i');b.style.transform='scaleY('+(0.15+Math.random()*0.5)+')';wf.appendChild(b);}
+var wb=wf.querySelectorAll('i');
+var career=[['2006','Radio Mirchi · prime-time host'],['2009','Radio One · client solutions lead'],['2015','Radio City · 700+ hrs, 500+ interviews'],['2023','Criya (YC) · content & community'],['2024','upliance.ai · Head of Content'],['2025','IIMA Ventures · consultant']];
+function wfMove(e){var r=wf.getBoundingClientRect();var p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));var x=p*wb.length;
+  wb.forEach(function(bb,i){var d=Math.abs(i-x);bb.style.transform='scaleY('+Math.max(0.15,1-d/8)+')';bb.classList.toggle('hot',d<5);});
+  var idx=Math.min(career.length-1,Math.floor(p*career.length));document.getElementById('wfLab').innerHTML='<b>'+career[idx][0]+'</b> — '+career[idx][1];}
+wf.addEventListener('mousemove',wfMove);
 
-  function enterEditor(){document.body.classList.add('editor');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}layout();}
-  if(location.hash==='#edit')enterEditor();else layout();
-  window.addEventListener('hashchange',function(){if(location.hash==='#edit')enterEditor();});
+/* count up */
+function runCount(s){s.querySelectorAll('b[data-to]').forEach(function(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.to,suf=el.dataset.suf||'',pre=el.dataset.pre||'',v=0,st=Math.max(1,to/40);var t=setInterval(function(){v+=st;if(v>=to){v=to;clearInterval(t);}el.textContent=pre+Math.round(v)+suf;},22);});}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){runCount(en.target);io.unobserve(en.target);}});},{threshold:.3});io.observe(document.querySelector('.stats'));}else runCount(document.querySelector('.stats'));
 
-  canvas.addEventListener('click',function(e){if(isEditor())return;var b=e.target.closest('.block[data-href]');if(b){var h=b.getAttribute('data-href');if(h&&h!=='#')location.href=h;}});
+/* now playing */
+function setNP(btn,t){document.getElementById('npTitle').innerHTML=t;}
 
-  function clearHandles(){canvas.querySelectorAll('.handle').forEach(function(h){h.remove();});}
-  function deselect(){if(sel){sel.classList.remove('sel','editing');sel.removeAttribute('contenteditable');}clearHandles();sel=null;document.body.classList.remove('has-sel');}
-  function select(b){if(sel===b){return;}deselect();sel=b;b.classList.add('sel');document.body.classList.add('has-sel');
-    ['nw','n','ne','e','se','s','sw','w'].forEach(function(d){var h=document.createElement('div');h.className='handle '+d;h.dataset.dir=d;b.appendChild(h);});
-    try{document.getElementById('i_color').value=rgb2hex(getComputedStyle(b).color);}catch(e){}
-    document.getElementById('i_href').value=b.getAttribute('data-href')||'';}
+/* theme + font */
+function setTheme(t){document.body.classList.toggle('light',t==='light');document.getElementById('thD').classList.toggle('on',t==='dark');document.getElementById('thL').classList.toggle('on',t==='light');}
+function setFont(f){document.documentElement.style.setProperty('--font',f);}
 
-  var mode=null,start={},orig={},target=null,dir=null;
-  canvas.addEventListener('mousedown',function(e){
-    if(!isEditor())return;
-    var h=e.target.closest('.handle'),b=e.target.closest('.block');
-    if(h){e.preventDefault();target=h.parentElement;dir=h.dataset.dir;mode='resize';start={x:e.clientX,y:e.clientY};
-      orig={l:parseFloat(target.style.left)||0,t:parseFloat(target.style.top)||0,w:target.offsetWidth,ht:target.offsetHeight};return;}
-    if(b){if(b.classList.contains('editing'))return;select(b);e.preventDefault();target=b;mode='drag';start={x:e.clientX,y:e.clientY};
-      orig={l:parseFloat(b.style.left)||0,t:parseFloat(b.style.top)||0};}
-    else deselect();
-  });
-  function lines(except){var xs=[0,CW/2,CW],ys=[0];canvas.querySelectorAll('.block').forEach(function(b){if(b===except)return;
-    var l=parseFloat(b.style.left)||0,t=parseFloat(b.style.top)||0,w=b.offsetWidth,ht=b.offsetHeight;xs.push(l,l+w/2,l+w);ys.push(t,t+ht/2,t+ht);});return{xs:xs,ys:ys};}
-  function snap(v,offs,ln){var best=null;offs.forEach(function(o){var a=v+o;ln.forEach(function(L){var d=Math.abs(a-L);if(d<=SNAP&&(!best||d<best.d))best={d:d,v:L-o,g:L};});});return best;}
-  window.addEventListener('mousemove',function(e){
-    if(!mode||!target)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;
-    if(mode==='drag'){var L=orig.l+dx,T=orig.t+dy,w=target.offsetWidth,ht=target.offsetHeight;var ln=lines(target);
-      var sx=snap(L,[0,w/2,w],ln.xs);if(sx){L=sx.v;gv.style.left=sx.g+'px';gv.style.display='block';}else{L=Math.round(L/GRID)*GRID;gv.style.display='none';}
-      var sy=snap(T,[0,ht/2,ht],ln.ys);if(sy){T=sy.v;gh.style.top=sy.g+'px';gh.style.display='block';}else{T=Math.round(T/GRID)*GRID;gh.style.display='none';}
-      target.style.left=L+'px';target.style.top=T+'px';
-    } else {var l=orig.l,t=orig.t,w=orig.w,ht=orig.ht;
-      if(dir.indexOf('e')>-1)w=Math.max(24,Math.round((orig.w+dx)/GRID)*GRID);
-      if(dir.indexOf('s')>-1)ht=Math.max(20,Math.round((orig.ht+dy)/GRID)*GRID);
-      if(dir.indexOf('w')>-1){w=Math.max(24,Math.round((orig.w-dx)/GRID)*GRID);l=orig.l+(orig.w-w);}
-      if(dir.indexOf('n')>-1){ht=Math.max(20,Math.round((orig.ht-dy)/GRID)*GRID);t=orig.t+(orig.ht-ht);}
-      target.style.left=l+'px';target.style.top=t+'px';target.style.width=w+'px';target.style.height=ht+'px';}
-  });
-  window.addEventListener('mouseup',function(){mode=null;target=null;dir=null;gv.style.display='none';gh.style.display='none';if(isEditor())stage.style.height=canvas.offsetHeight+'px';});
+/* editor */
+if(location.hash==='#edit')document.body.classList.add('editor');
+window.addEventListener('hashchange',function(){if(location.hash==='#edit')document.body.classList.add('editor');});
+function toggleEdit(){var on=document.body.classList.toggle('editing');document.getElementById('bEdit').classList.toggle('on',on);document.querySelectorAll('.ed').forEach(function(e){e.contentEditable=on?'true':'false';});document.getElementById('bEdit').textContent=on?'✓ Done':'✎ Edit text';}
+var savedRange=null;document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s&&s.rangeCount&&document.body.classList.contains('editing'))savedRange=s.getRangeAt(0).cloneRange();});
+function fmt(cmd,val){if(savedRange){var s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}try{document.execCommand('styleWithCSS',false,true);}catch(e){}document.execCommand(cmd,false,val||null);}
 
-  canvas.addEventListener('dblclick',function(e){if(!isEditor())return;var b=e.target.closest('.block');if(!b)return;select(b);clearHandles();b.classList.add('editing');b.contentEditable='true';b.focus();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&sel){sel.classList.remove('editing');sel.removeAttribute('contenteditable');select(sel);}if(e.key==='Delete'&&sel&&!sel.isContentEditable)delSel();});
-
-  function styleSel(p,v){if(sel)sel.style[p]=v;}
-  function bump(p,by){if(!sel)return;var c=parseFloat(getComputedStyle(sel)[p])||0;sel.style[p]=(c+by)+'px';}
-  function setHref(v){if(!sel)return;if(v)sel.setAttribute('data-href',v);else sel.removeAttribute('data-href');}
-  function layer(d){if(!sel)return;sel.style.zIndex=(parseInt(sel.style.zIndex||0)+d*10);}
-  function dup(){if(!sel)return;var c=sel.cloneNode(true);c.classList.remove('sel','editing');c.querySelectorAll('.handle').forEach(function(h){h.remove();});c.style.left=(parseFloat(sel.style.left)+20)+'px';c.style.top=(parseFloat(sel.style.top)+20)+'px';canvas.appendChild(c);select(c);}
-  function delSel(){if(!sel)return;var x=sel;deselect();x.remove();}
-  var savedRange=null;
-  document.addEventListener('selectionchange',function(){var s=window.getSelection();if(s&&s.rangeCount&&isEditor())savedRange=s.getRangeAt(0).cloneRange();});
-  function fmt(cmd,val){if(savedRange){var s=window.getSelection();s.removeAllRanges();s.addRange(savedRange);}try{document.execCommand('styleWithCSS',false,true);}catch(e){}document.execCommand(cmd,false,val||null);}
-  function rgb2hex(rgb){var m=rgb.match(/\d+/g);if(!m)return'#000000';return'#'+m.slice(0,3).map(function(n){return('0'+parseInt(n).toString(16)).slice(-2);}).join('');}
-
-  var addN=0;
-  function addBlock(k){var b=document.createElement('div');b.className='block';var x=40+(addN%5)*30,y=620+(addN%6)*30;addN++;
-    if(k==='text'){b.className+=' b-text';b.style.width='320px';b.innerHTML='New text — double-click to edit.';}
-    else if(k==='heading'){b.className+=' b-name';b.style.width='340px';b.style.fontSize='26px';b.innerHTML='New heading';}
-    else if(k==='box'){b.className+=' b-box';b.style.width='240px';b.style.height='150px';}
-    else if(k==='image'){var u=prompt('Paste an image URL (https://…):');if(!u)return;b.style.width='240px';b.style.height='160px';b.style.borderRadius='12px';b.style.overflow='hidden';b.innerHTML='<img src="'+u+'" style="width:100%;height:100%;object-fit:cover;display:block;">';}
-    else if(k==='icon'){var em=prompt('Type an emoji or symbol:','★');if(!em)return;b.className+=' b-name';b.style.fontSize='42px';b.style.width='auto';b.textContent=em;}
-    b.style.left=x+'px';b.style.top=y+'px';canvas.appendChild(b);select(b);stage.style.height=canvas.offsetHeight+'px';}
-
-  function preview(){deselect();document.body.classList.remove('editor');location.hash='';layout();}
-  function openPub(){deselect();document.getElementById('pubModal').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
-  function closePub(){document.getElementById('pubModal').classList.remove('open');}
-  function pstatus(m){document.getElementById('pubStatus').textContent=m;}
-  function utf8b64(s){return btoa(unescape(encodeURIComponent(s)));}
-  function serializeDoc(){deselect();var c=document.documentElement.cloneNode(true);
-    c.querySelectorAll('.handle').forEach(function(n){n.remove();});
-    c.querySelectorAll('.block').forEach(function(b){b.classList.remove('sel','editing');b.removeAttribute('contenteditable');});
-    var cv=c.querySelector('#canvas');if(cv){cv.style.transform='';cv.style.left='';}
-    var st=c.querySelector('#stage');if(st)st.style.height='';
-    var bd=c.querySelector('body');if(bd)bd.classList.remove('editor','has-sel');
-    var pm=c.querySelector('#pubModal');if(pm)pm.classList.remove('open');
-    return '<!DOCTYPE html>\n'+c.outerHTML;}
-  async function publish(){
-    var owner=document.getElementById('f_owner').value.trim(),repo=document.getElementById('f_repo').value.trim(),branch=document.getElementById('f_branch').value.trim()||'main',path=document.getElementById('f_path').value.trim()||'index.html',token=document.getElementById('f_token').value.trim();
-    if(!token){pstatus('Paste your access token first.');return;}
-    try{localStorage.setItem('gh_token',token);}catch(e){}
-    pstatus('Publishing…');
-    var api='https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,sha=null;
-    try{var g=await fetch(api+'?ref='+branch,{headers:{Authorization:'Bearer '+token}});if(g.ok)sha=(await g.json()).sha;}catch(e){}
-    var body={message:'Update portfolio via canvas editor',content:utf8b64(serializeDoc()),branch:branch};if(sha)body.sha=sha;
-    try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-      if(r.ok)pstatus('✓ Published! Your live site updates in about a minute.');
-      else{var t=await r.text();pstatus('Error '+r.status+'. Check username/repo/token. '+t.slice(0,120));}}
-    catch(e){pstatus('Network error: '+e.message);}}
+/* publish */
+function openPub(){document.getElementById('pub').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
+function closePub(){document.getElementById('pub').classList.remove('open');}
+function ps(m){document.getElementById('pst').textContent=m;}
+function u8(s){return btoa(unescape(encodeURIComponent(s)));}
+function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
+async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok)ps('✓ Published! Live in about a minute.');else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
 </script>
-</body>
-</html>
+</body></html>
