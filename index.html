@@ -284,6 +284,7 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar,body.editor.select #s
   <button class="eb" id="bReset" onclick="resetAll()" title="Undo ALL moves &amp; resizing back to clean">⟲ Reset all</button>
   <button class="eb" id="bTour" onclick="startTour()" title="Show the how-to walkthrough">？ Help</button>
   <span class="l" id="saveind" title="Your edits are auto-saved in this browser"></span>
+  <button class="eb" id="bDownload" onclick="downloadHTML()" title="Save your edited page as a file you can upload to GitHub">⬇ Download</button>
   <button class="eb pri" onclick="openPub()">Publish ▸</button>
 </div>
 <input type="file" id="imgpick" accept="image/*" style="display:none">
@@ -386,9 +387,9 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar,body.editor.select #s
     <div class="h2 ed">Experience</div>
     <div class="acc">
       <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2025 – 2025</span><span class="ti ed">Consultant · IIMA Ventures</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Ran a content-marketing masterclass for 40+ fintech &amp; climatetech startups on content–customer fit.</span><div class="vrow"><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
-      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.</span> <span class="res ed">Instagram 4× in 4 months · YouTube CTR +28%</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
-      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
-      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.</span> <span class="res ed">300K daily listeners · +15% year one</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(event,this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2024 – Present</span><span class="ti ed">Head of Content · upliance.ai</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">AI-focused content and influencer strategy; built the content engine end-to-end and shaped a new multi-product brand identity.</span> <span class="res ed">Instagram 4× in 4 months · YouTube CTR +28%</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2023 – 2023</span><span class="ti ed">Content &amp; Community · Criya.co (YC, SF)</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Co-built content and community IP for founders building personal brands; ran CriyaCon (~180 leaders); led retention and UGC across channels.</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
+      <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2015 – 2020</span><span class="ti ed">Prime-time Host &amp; Producer · Radio City</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Produced 700+ hours of content and conducted 500+ interviews — including the Indian PM — building IPs like Tech Talk and Radio for Change.</span> <span class="res ed">300K daily listeners · +15% year one</span><div class="vrow"><a class="vtile vg1" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><a class="vtile vg2" href="#" target="_blank" rel="noopener"><button class="delx" title="Remove">✕</button><button class="dragh" title="Drag to reorder" onpointerdown="startSort(event,this.closest('.vtile'))">⠿</button><span class="ph">▶ add a video (plays muted)</span><span class="play">▶</span><button class="vedit" onmousedown="event.preventDefault()" onclick="setVideo(this.closest('.vtile'))">🎬 Set video</button></a><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
       <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2009 – 2014</span><span class="ti ed">Host &amp; Client Solutions · Radio One</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Built branded-content partnerships and campaigns driving ~20% revenue growth; produced 600+ hours of content as programming director and host.</span><div class="vrow"><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
       <div class="item open"><div class="hd" onclick="accToggle(this)"><span class="yr ed">2006 – 2008</span><span class="ti ed">Prime-time Host &amp; Producer · Radio Mirchi</span><span class="ar">▾</span></div><div class="bd"><div class="inr"><span class="ed">Promoted from assistant to prime-time show host within three months; hosted and scripted three distinct show genres.</span><div class="vrow"><button class="addbtn vadd" onclick="addVideo(this)" title="Add another video">＋ video</button></div></div></div></div>
     </div>
@@ -703,80 +704,52 @@ document.addEventListener('input',function(e){if(e.target.closest&&e.target.clos
 function clearDraft(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
 
 /* ===== auto-playing muted video slots (whole video or a highlight clip) ===== */
+/* ===== video slots: autoplay muted, whole or highlight loop (YouTube + mp4 + upload) ===== */
 var ytReady=(window.YT&&window.YT.Player)?true:false, ytQueue=[];
 function loadYT(){if(window.YT&&window.YT.Player){ytReady=true;return;}if(document.getElementById('ytapi'))return;var s=document.createElement('script');s.id='ytapi';s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);}
 window.onYouTubeIframeAPIReady=function(){ytReady=true;ytQueue.forEach(function(fn){fn();});ytQueue=[];};
-function parseTime(t){if(t==null)return 0;t=(''+t).trim();if(!t)return 0;if(t.indexOf(':')>=0){var a=t.split(':').map(Number);return a.length===3?a[0]*3600+a[1]*60+a[2]:a[0]*60+a[1];}return parseFloat(t)||0;}
+function vtime(t){if(t==null)return 0;t=(''+t).trim();if(!t)return 0;if(t.indexOf(':')>=0){var a=t.split(':').map(Number);return a.length===3?a[0]*3600+a[1]*60+a[2]:a[0]*60+a[1];}return parseFloat(t)||0;}
 function ytId(u){var m=(u||'').match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{6,})/);return m?m[1]:'';}
-function renderVideo(v){var type=v.getAttribute('data-vtype'),id=v.getAttribute('data-vid');if(!type||!id)return;
-  var st=parseTime(v.getAttribute('data-start')),en=parseTime(v.getAttribute('data-end'));
-  v.querySelectorAll('iframe,video,.ytholder,.ph,.play').forEach(function(e){e.remove();});
+function renderVideo(v){var kind=v.getAttribute('data-kind'),src=v.getAttribute('data-src');if(!kind||!src)return;
+  var st=vtime(v.getAttribute('data-start')),en=vtime(v.getAttribute('data-end'));
+  v.querySelectorAll('iframe,video,.ytholder').forEach(function(e){e.remove();});
   if(v._iv){clearInterval(v._iv);v._iv=null;}
-  if(!v.querySelector('.vbadge')){var bd=document.createElement('span');bd.className='vbadge';bd.textContent=en?'▶ highlight (muted)':'▶ playing (muted)';v.appendChild(bd);}
-  else v.querySelector('.vbadge').textContent=en?'▶ highlight (muted)':'▶ playing (muted)';
-  if(type==='mp4'){var vid=document.createElement('video');vid.src=id+(st?('#t='+st+(en?(','+en):'')):'');vid.autoplay=true;vid.muted=true;vid.defaultMuted=true;vid.loop=!en;vid.playsInline=true;vid.setAttribute('muted','');vid.setAttribute('playsinline','');
-    if(en){vid.addEventListener('loadedmetadata',function(){try{vid.currentTime=st;}catch(e){}});vid.addEventListener('timeupdate',function(){if(vid.currentTime>=en||vid.currentTime<st-0.2)try{vid.currentTime=st;}catch(e){}});}
+  v.classList.add('hasvid');
+  if(kind==='mp4'){var vid=document.createElement('video');vid.src=src;vid.autoplay=true;vid.muted=true;vid.defaultMuted=true;vid.loop=!en;vid.playsInline=true;vid.setAttribute('muted','');vid.setAttribute('playsinline','');
+    if(en){vid.addEventListener('loadedmetadata',function(){try{vid.currentTime=st;}catch(e){}});vid.addEventListener('timeupdate',function(){if(vid.currentTime>=en||vid.currentTime<st-0.3){try{vid.currentTime=st;}catch(e){}}});}
     v.appendChild(vid);if(vid.play)vid.play().catch(function(){});return;}
-  /* youtube */
   var holder=document.createElement('div');holder.className='ytholder';v.appendChild(holder);
-  function make(){try{var pv={autoplay:1,mute:1,controls:0,disablekb:1,fs:0,iv_load_policy:3,modestbranding:1,rel:0,playsinline:1};
-    if(en){pv.start=Math.floor(st);pv.end=Math.ceil(en);}else{pv.loop=1;pv.playlist=id;if(st)pv.start=Math.floor(st);}
-    var pl=new YT.Player(holder,{videoId:id,playerVars:pv,events:{onReady:function(e){e.target.mute();e.target.playVideo();},onStateChange:function(e){if(e.data===YT.PlayerState.ENDED){e.target.seekTo(st||0);e.target.playVideo();}}}});
-    if(en){v._iv=setInterval(function(){try{if(pl.getCurrentTime&&pl.getCurrentTime()>=en){pl.seekTo(st||0,true);pl.playVideo();}}catch(e){}},300);}
+  function make(){try{var pv={autoplay:1,mute:1,controls:0,disablekb:1,fs:0,modestbranding:1,rel:0,playsinline:1};
+    if(!en){pv.loop=1;pv.playlist=src;}else{pv.start=Math.floor(st);pv.end=Math.ceil(en);}
+    var pl=new YT.Player(holder,{videoId:src,playerVars:pv,events:{onReady:function(e){e.target.mute();e.target.playVideo();},onStateChange:function(e){if(en&&e.data===YT.PlayerState.ENDED){try{pl.seekTo(st);pl.playVideo();}catch(x){}}}}});
+    if(en){v._iv=setInterval(function(){try{if(pl.getCurrentTime&&pl.getCurrentTime()>=en){pl.seekTo(st);}}catch(x){}},500);}
   }catch(e){}}
   loadYT();if(ytReady)make();else ytQueue.push(make);}
-function initVideos(){document.querySelectorAll('.vtile[data-vid]').forEach(renderVideo);}
-
-/* editor: set / change a slot's video */
-function setVideo(v){if(!v)return;
-  var url=prompt('Paste a VIDEO link to play here:\n\n• YouTube link (recommended), or\n• a direct .mp4 video URL\n\n(Instagram links can\u2019t auto-play, sorry.)',v.getAttribute('data-src')||'https://');
-  if(url===null)return;url=url.trim();if(!url){return;}
-  var type,id;
-  if(/\.mp4(\?|#|$)/i.test(url)){type='mp4';id=url;}
-  else{var yi=ytId(url);if(!yi){alert('That doesn\u2019t look like a YouTube or .mp4 link. Instagram can\u2019t auto-play. Please paste a YouTube link or a direct .mp4 URL.');return;}type='yt';id=yi;}
-  var whole=confirm('How should this video play (always muted)?\n\nOK  = the WHOLE video, looped start-to-end\nCancel = just a HIGHLIGHT clip you choose');
-  var st='',en='';
-  if(!whole){st=prompt('Highlight START time (e.g. 0:15, or seconds):','0:00');if(st===null)return;en=prompt('Highlight END time (e.g. 0:30, or seconds):','0:20');if(en===null)return;}
-  pushUndo();
-  v.setAttribute('data-vtype',type);v.setAttribute('data-vid',id);v.setAttribute('data-src',url);
-  if(st&&st.trim())v.setAttribute('data-start',st.trim());else v.removeAttribute('data-start');
-  if(en&&en.trim())v.setAttribute('data-end',en.trim());else v.removeAttribute('data-end');
-  v.setAttribute('href',url);
-  renderVideo(v);saveSoon();}
-
-/* ===== autoplay-muted video slots (whole or highlight loop) ===== */
-function ytId(u){if(!u)return'';var m=u.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{6,})/);return m?m[1]:(/^[A-Za-z0-9_-]{6,}$/.test(u)?u:'');}
+function initVideos(){document.querySelectorAll('.vtile[data-kind]').forEach(renderVideo);}
 var vidFor=null;
-function setVideo(e,vt){if(e){e.preventDefault();e.stopPropagation();}if(!vt)return;vidFor=vt;
-  var useFile=confirm('Add a video to this slot.\n\nOK = upload a short clip from your device\nCancel = paste a YouTube link');
-  if(useFile){document.getElementById('vidpick').click();/* continues in change handler */}
-  else{var u=prompt('YouTube link or video ID:','https://youtube.com/watch?v=');var id=ytId(u||'');if(!id){if(u)alert('Could not read that YouTube link.');return;}pushUndo();vt.dataset.yt=id;delete vt.dataset.file;askHighlight(vt);buildVtile(vt);saveSoon();}
+function setVideo(vt){if(!vt)return;
+  var link=confirm('Add a video that auto-plays muted in this slot.\n\nOK = paste a link (YouTube or .mp4 URL)\nCancel = upload a short clip from your device');
+  if(link){var url=prompt('Paste a YouTube link, or a direct .mp4 video URL:',vt.getAttribute('data-src')||'https://');if(url===null)return;url=url.trim();if(!url)return;var yi=ytId(url);var kind,src;if(yi){kind='yt';src=yi;}else if(/\.mp4(\?|#|$)/i.test(url)){kind='mp4';src=url;}else{alert('Please paste a YouTube link or a direct .mp4 URL.\n(Instagram links cannot auto-play.)');return;}pushUndo();vt.setAttribute('data-kind',kind);vt.setAttribute('data-src',src);askHighlight(vt);renderVideo(vt);saveSoon();}
+  else{vidFor=vt;var ip=document.getElementById('vidpick');if(ip)ip.click();}
 }
-var _vp=document.getElementById('vidpick');if(_vp)_vp.addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f||!vidFor){e.target.value='';return;}var rd=new FileReader();rd.onload=function(ev){pushUndo();vidFor.dataset.file=ev.target.result;delete vidFor.dataset.yt;askHighlight(vidFor);buildVtile(vidFor);saveSoon();};rd.readAsDataURL(f);e.target.value='';});
-function askHighlight(vt){var hl=confirm('How should it play?\n\nOK = just a HIGHLIGHT clip (you set start & end)\nCancel = the WHOLE video');
-  if(hl){var s=prompt('Highlight START time in seconds (e.g. 12):',vt.dataset.start||'0');var en=prompt('Highlight END time in seconds (e.g. 22):',vt.dataset.end||'10');vt.dataset.mode='highlight';vt.dataset.start=Math.max(0,parseFloat(s)||0);vt.dataset.end=Math.max(vt.dataset.start,parseFloat(en)||0);}
-  else{vt.dataset.mode='whole';vt.removeAttribute('data-start');vt.removeAttribute('data-end');}}
-function clearBuilt(vt){[].slice.call(vt.querySelectorAll('video,iframe,.ytwrap')).forEach(function(n){n.remove();});}
-function buildVtile(vt){clearBuilt(vt);var mode=vt.dataset.mode||'whole';var st=parseFloat(vt.dataset.start||'0'),en=parseFloat(vt.dataset.end||'0');
-  if(vt.dataset.file){var v=document.createElement('video');v.src=vt.dataset.file;v.muted=true;v.autoplay=true;v.loop=(mode!=='highlight');v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');
-    if(mode==='highlight'){v.addEventListener('loadedmetadata',function(){try{v.currentTime=st;}catch(e){}});v.addEventListener('timeupdate',function(){if(en>st&&v.currentTime>=en)v.currentTime=st;});}
-    vt.appendChild(v);vt.classList.add('hasvid');v.play&&v.play().catch(function(){});}
-  else if(vt.dataset.yt){var id=vt.dataset.yt;var base='https://www.youtube.com/embed/'+id+'?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1&loop=1&playlist='+id;
-    if(mode==='highlight'&&en>st)base+='&start='+Math.floor(st)+'&end='+Math.ceil(en);
-    var f=document.createElement('iframe');f.src=base;f.allow='autoplay; encrypted-media';f.setAttribute('frameborder','0');f.setAttribute('allowfullscreen','');
-    vt.appendChild(f);vt.classList.add('hasvid');}
-}
-function initVideos(){[].slice.call(document.querySelectorAll('.vtile')).forEach(function(vt){if(vt.dataset.file||vt.dataset.yt)buildVtile(vt);});}
+var _vp=document.getElementById('vidpick');if(_vp)_vp.addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f||!vidFor){e.target.value='';return;}var rd=new FileReader();rd.onload=function(ev){pushUndo();vidFor.setAttribute('data-kind','mp4');vidFor.setAttribute('data-src',ev.target.result);askHighlight(vidFor);renderVideo(vidFor);saveSoon();};rd.readAsDataURL(f);e.target.value='';});
+function askHighlight(vt){var hl=confirm('How should it play (always muted)?\n\nOK = just a HIGHLIGHT clip (you set start & end)\nCancel = the WHOLE video, looped');
+  if(hl){var s=prompt('Highlight START (seconds, or m:ss like 0:12):',vt.getAttribute('data-start')||'0:00');if(s===null)return;var en=prompt('Highlight END (seconds, or m:ss like 0:22):',vt.getAttribute('data-end')||'0:15');if(en===null)return;vt.setAttribute('data-start',(s||'').trim());vt.setAttribute('data-end',(en||'').trim());}
+  else{vt.removeAttribute('data-start');vt.removeAttribute('data-end');}}
+
+
 
 /* publish */
 function openPub(){document.getElementById('pub').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
 function closePub(){document.getElementById('pub').classList.remove('open');}
+function downloadHTML(){var html=serialize();var blob=new Blob([html],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);clearDraft();}
 function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
 function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx,.vedit').forEach(function(e){e.remove();});c.querySelectorAll('.vtile video,.vtile iframe').forEach(function(e){e.remove();});c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
   /* video slots: drop live players (rebuilt on load) and remove only EMPTY slots so visitors see just real videos */
-  c.querySelectorAll('.vtile iframe,.vtile video').forEach(function(e){e.remove();});
-  c.querySelectorAll('.vtile').forEach(function(v){if(!v.getAttribute('data-yt')&&!v.getAttribute('data-file'))v.remove();});
+  c.querySelectorAll('.vtile iframe,.vtile video,.vtile .ytholder').forEach(function(e){e.remove();});
+  c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
+  c.querySelectorAll('.vtile').forEach(function(v){if(!v.getAttribute('data-kind'))v.remove();});
   c.querySelectorAll('.vrow').forEach(function(r){if(!r.querySelector('.vtile'))r.remove();});['#selbox','#movetip','#fbar','#tour','#imgpick','#vidpick','#prevback','#ytapi'].forEach(function(s){var el=c.querySelector(s);if(el)el.remove();});c.querySelectorAll('.gline,.aguide').forEach(function(e){e.remove();});var bd=c.querySelector('body');if(bd)bd.style.paddingTop='';var sbr=c.querySelector('#sbar');if(sbr)sbr.style.top='';c.querySelectorAll('.wrap>header,.wrap>section').forEach(function(e){e.style.outline='';});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit','arrange','moveedit','preview','select');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
 async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok){ps('✓ Published! Live in about a minute.');clearDraft();}else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
 </script>
