@@ -50,6 +50,9 @@ body.light{--bg:#F7F5F2;--ink:#1A1A1A;--muted:#6a655c;--faint:#b3ab9e;--line:#e6
 body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background .25s,color .25s;}
 a{color:inherit;text-decoration:none;}
 .wrap{max-width:1200px;margin:0 auto;padding:0 48px;}
+body.editor .ed:hover{outline:1px dashed color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px;border-radius:3px;cursor:text;}
+.ed.editingnow{outline:2px solid var(--accent)!important;}
+.vtile .vedit::before,.tile .vedit::before{content:'🎬';font-size:16px;}
 body.editing .ed{outline:1px dashed var(--accent);outline-offset:3px;border-radius:3px;}
 body.linkedit .soc a,body.linkedit .tile,body.linkedit a.cta,body.linkedit a.mail{outline:2px dashed var(--accent);outline-offset:3px;cursor:pointer;}
 body.editing .tile .res{opacity:1;}
@@ -244,6 +247,7 @@ body.editor.moveedit #rowbar.on{display:flex;}
 .vtile:hover{transform:translateY(-3px);box-shadow:0 14px 30px -14px rgba(0,0,0,.55);}
 .vtile.hasvid .ph,.vtile.hasvid .play{display:none;}.vtile.hasvid{background:#000;}
 .vtile .play{position:absolute;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);color:#161519;display:grid;place-items:center;font-size:15px;opacity:0;transform:scale(.7);transition:.2s;}
+.vtile.hasvid::before,.tile.hasvid::before{content:'';position:absolute;top:0;left:0;right:0;height:64px;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.28),rgba(0,0,0,0));}
 .vtile iframe,.vtile video,.vtile .ytholder{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;z-index:1;}
 .tile{position:relative;overflow:hidden;}
 .tile iframe,.tile video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;z-index:1;}
@@ -251,8 +255,10 @@ body.editor.moveedit #rowbar.on{display:flex;}
 .tile .cp{z-index:3;}
 body.editor .tile iframe,body.editor .tile video{pointer-events:none;}
 
-.vtile .vedit,.tile .vedit{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--font);font-size:12px;font-weight:700;padding:8px 14px;border:none;border-radius:9px;background:var(--accent);color:var(--onacc);cursor:pointer;display:none;white-space:nowrap;box-shadow:0 6px 18px -6px rgba(0,0,0,.5);}
-body.editor .vtile .vedit,body.editor .tile .vedit{display:inline-flex;align-items:center;gap:5px;}
+.vtile .vedit,.tile .vedit{position:absolute;z-index:6;left:8px;bottom:8px;right:auto;top:auto;transform:none;font-family:var(--font);font-size:0;width:34px;height:34px;padding:0;display:grid;place-items:center;border-radius:50%;white-space:nowrap;background:rgba(0,0,0,.65);color:transparent;box-shadow:0 2px 8px rgba(0,0,0,.4);border:none;border-radius:9px;background:var(--accent);color:var(--onacc);cursor:pointer;display:none;white-space:nowrap;box-shadow:0 6px 18px -6px rgba(0,0,0,.5);}
+body.editor .vtile .vedit,body.editor .tile .vedit{display:grid;}
+body.editor .vtile.hasvid .vedit,body.editor .tile.hasvid .vedit{opacity:0;transition:opacity .15s;}
+body.editor .vtile.hasvid:hover .vedit,body.editor .tile.hasvid:hover .vedit{opacity:1;}
 body.editor .vtile.hasvid .vedit,body.editor .tile.hasvid .vedit{top:auto;bottom:8px;left:8px;transform:none;font-size:11px;padding:5px 10px;opacity:.92;}
 .vtile .delx,.vtile .dragh{display:none;}body.editor .vtile .delx,body.editor .vtile .dragh{display:grid;}
 /* visitors: hide a slot that has no video; keep it in the file for editing */
@@ -349,7 +355,7 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar,body.editor.select #s
 <button class="eb" id="bReset" onclick="resetAll()" title="Undo ALL moves &amp; resizing back to clean">⟲ Reset all</button>
 <button class="eb" id="bTour" onclick="startTour()" title="Show the how-to walkthrough">？ Help</button>
 <span class="l" id="saveind" title="Your edits are auto-saved in this browser"></span>
-<button class="eb" id="bDownload" onclick="downloadHTML()" title="Save your edited page as a file you can upload to GitHub">⬇ Download</button>
+<button class="eb" id="bDownload" onclick="downloadHTML()" title="Save your edited page (download the file, then upload to GitHub)">💾 Save</button>
 <button class="eb pri" onclick="openPub()">Publish ▸</button>
 </div>
 <div id="sbar"><span class="l">Tap a line (or highlight words), then:</span>
@@ -510,6 +516,25 @@ document.addEventListener('mousedown',function(e){
   var ed=e.target.closest('.ed');
   if(ed){ ed.focus && ed.focus(); }
 }, true);
+
+
+/* UX: double-click any text to edit it, no mode needed */
+document.addEventListener('dblclick',function(e){
+  if(!document.body.classList.contains('editor'))return;
+  var ed=e.target.closest('.ed');
+  if(!ed)return;
+  e.preventDefault();
+  ed.contentEditable='true';
+  ed.classList.add('editingnow');
+  ed.focus();
+  // place caret where clicked
+  try{var r=document.caretRangeFromPoint(e.clientX,e.clientY);if(r){var s=getSelection();s.removeAllRanges();s.addRange(r);}}catch(x){}
+});
+/* when a text loses focus, lock it back (so single clicks elsewhere don't stay editable) */
+document.addEventListener('blur',function(e){
+  var ed=e.target&&e.target.closest?e.target.closest('.ed.editingnow'):null;
+  if(ed){ ed.classList.remove('editingnow'); if(!document.body.classList.contains('editing'))ed.contentEditable='false'; saveSoon&&saveSoon(); }
+},true);
 
 function toggleEdit(){var on=document.body.classList.toggle('editing');document.getElementById('bEdit').classList.toggle('on',on);document.querySelectorAll('.ed').forEach(function(e){e.contentEditable=on?'true':'false';});document.getElementById('bEdit').textContent=on?'✓ Done':'✎ Edit text';fitChrome();}
 var savedRange=null, activeEd=null;
@@ -871,14 +896,14 @@ function renderVideo(v){var kind=v.getAttribute('data-kind'),src=v.getAttribute(
   /* youtube */
   if(en){ /* HIGHLIGHT: loop just the start..end section via the YouTube API */
     var holder=document.createElement('div');holder.className='ytholder';v.appendChild(holder);addVideoControls(v);
-    var mk=function(){ try{ v._yt=new YT.Player(holder,{videoId:src,playerVars:{autoplay:1,mute:1,controls:0,rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,start:Math.floor(st),end:Math.ceil(en)},
+    var mk=function(){ try{ v._yt=new YT.Player(holder,{videoId:src,host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,mute:1,controls:0,rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,start:Math.floor(st),end:Math.ceil(en)},
       events:{ onReady:function(e){e.target.mute();e.target.playVideo();},
                onStateChange:function(e){ if(e.data===YT.PlayerState.ENDED){ try{e.target.seekTo(st,true);e.target.playVideo();}catch(x){} } } }}); }catch(x){} };
     if(window.YT&&YT.Player){mk();} else { (window._ytq=window._ytq||[]).push(mk); if(!window._ytload){window._ytload=1;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);window.onYouTubeIframeAPIReady=function(){(window._ytq||[]).forEach(function(fn){fn();});window._ytq=[];};} }
     return;
   }
   /* WHOLE video: plain iframe, looped */
-  var url='https://www.youtube.com/embed/'+src+'?autoplay=1&mute=1&controls=0&loop=1&playlist='+src+'&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3';
+  var url='https://www.youtube-nocookie.com/embed/'+src+'?autoplay=1&mute=1&controls=0&loop=1&playlist='+src+'&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&showinfo=0&fs=0&disablekb=1';
   var f=document.createElement('iframe');f.src=url;f.setAttribute('frameborder','0');f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','video');
   v.appendChild(f);addVideoControls(v);}
 function initVideos(){document.querySelectorAll('.vtile[data-kind],.tile[data-kind]').forEach(renderVideo);}
@@ -930,7 +955,7 @@ function downloadHTML(){
 }
 function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
-function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx,.vedit').forEach(function(e){e.remove();});c.querySelectorAll('.vtile video,.vtile iframe').forEach(function(e){e.remove();});c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
+function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.editingnow').forEach(function(e){e.classList.remove('editingnow');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx,.vedit').forEach(function(e){e.remove();});c.querySelectorAll('.vtile video,.vtile iframe').forEach(function(e){e.remove();});c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
   /* video slots: drop live players (rebuilt on load) and remove only EMPTY slots so visitors see just real videos */
   c.querySelectorAll('.vtile iframe,.vtile video,.vtile .ytholder,.tile iframe,.tile video').forEach(function(e){e.remove();});c.querySelectorAll('.vctl').forEach(function(e){e.remove();});
   c.querySelectorAll('.vtile.hasvid,.tile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
