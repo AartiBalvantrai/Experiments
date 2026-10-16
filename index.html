@@ -227,10 +227,15 @@ body.preview{padding-top:0!important;}
 .vtile.hasvid .ph,.vtile.hasvid .play{display:none;}.vtile.hasvid{background:#000;}
 .vtile .play{position:absolute;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);color:#161519;display:grid;place-items:center;font-size:15px;opacity:0;transform:scale(.7);transition:.2s;}
 .vtile iframe,.vtile video,.vtile .ytholder{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;z-index:1;}
+.tile{position:relative;overflow:hidden;}
+.tile iframe,.tile video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;z-index:1;}
+.tile.hasvid .th{opacity:0;}
+.tile .cp{z-index:3;}
+body.editor .tile iframe,body.editor .tile video{pointer-events:none;}
 
-.vtile .vedit{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--font);font-size:12px;font-weight:700;padding:8px 14px;border:none;border-radius:9px;background:var(--accent);color:var(--onacc);cursor:pointer;display:none;white-space:nowrap;box-shadow:0 6px 18px -6px rgba(0,0,0,.5);}
-body.editor .vtile .vedit{display:inline-flex;align-items:center;gap:5px;}
-body.editor .vtile.hasvid .vedit{top:auto;bottom:8px;left:8px;transform:none;font-size:11px;padding:5px 10px;opacity:.92;}
+.vtile .vedit,.tile .vedit{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--font);font-size:12px;font-weight:700;padding:8px 14px;border:none;border-radius:9px;background:var(--accent);color:var(--onacc);cursor:pointer;display:none;white-space:nowrap;box-shadow:0 6px 18px -6px rgba(0,0,0,.5);}
+body.editor .vtile .vedit,body.editor .tile .vedit{display:inline-flex;align-items:center;gap:5px;}
+body.editor .vtile.hasvid .vedit,body.editor .tile.hasvid .vedit{top:auto;bottom:8px;left:8px;transform:none;font-size:11px;padding:5px 10px;opacity:.92;}
 .vtile .delx,.vtile .dragh{display:none;}body.editor .vtile .delx,body.editor .vtile .dragh{display:grid;}
 /* visitors: hide a slot that has no video; keep it in the file for editing */
 body:not(.editor) .vtile:not(.hasvid){display:none;}
@@ -402,12 +407,12 @@ body.editor #ebar{display:flex;} body.editor.editing #sbar,body.editor.select #s
 <section class="sec">
 <div class="h2 ed">Selected work</div>
 <div class="work">
-<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b class="ed">4×</b><span class="ed">Instagram in 4 months</span></div></a>
-<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b class="ed">~180</b><span class="ed">leaders convened</span></div></a>
-<a class="tile" href="https://youtu.be/IGk26ThH-9A" rel="noopener" target="_blank"><div class="th g3" style='background-image: url("https://youtu.be/IGk26ThH-9A"); background-size: cover; background-position: center center; animation: auto ease 0s 1 normal none running none;'></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b class="ed">700+</b><span class="ed">hours of content</span></div></a>
-<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b class="ed">EC</b><span class="ed">voter awareness, Gujarat</span></div></a>
-<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b class="ed">28%+</b><span class="ed">YouTube CTR</span></div></a>
-<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b class="ed">300K</b><span class="ed">audience reached daily</span></div></a>
+<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g1"></div><span class="cp ed">upliance.ai brand</span><div class="res"><b class="ed">4×</b><span class="ed">Instagram in 4 months</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
+<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g2"></div><span class="cp ed">CriyaCon 2023</span><div class="res"><b class="ed">~180</b><span class="ed">leaders convened</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
+<a class="tile" href="https://youtu.be/IGk26ThH-9A" rel="noopener" target="_blank"><div class="th g3" style='background-image: url("https://youtu.be/IGk26ThH-9A"); background-size: cover; background-position: center center; animation: auto ease 0s 1 normal none running none;'></div><span class="cp ed">Tech Talk · content IP</span><div class="res"><b class="ed">700+</b><span class="ed">hours of content</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
+<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g4"></div><span class="cp ed">Radio for Change</span><div class="res"><b class="ed">EC</b><span class="ed">voter awareness, Gujarat</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
+<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g5"></div><span class="cp ed">Influencer campaigns</span><div class="res"><b class="ed">28%+</b><span class="ed">YouTube CTR</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
+<a class="tile" href="#" rel="noopener" target="_blank"><div class="th g6"></div><span class="cp ed">Brand storytelling</span><div class="res"><b class="ed">300K</b><span class="ed">audience reached daily</span></div><button class="vedit" onclick="setVideo(this.closest('.tile'))" onmousedown="event.preventDefault()" title="Add or change the video that plays here">🎬 Add / change video</button></a>
 </div>
 <p class="note ed">In “🔗 Links &amp; thumbnails” mode: click a tile to set its image &amp; link, or tap the ✕ to remove it.</p>
 </section>
@@ -534,6 +539,7 @@ document.addEventListener('click',function(e){
   /* work tile */
   var tile=e.target.closest('.tile');
   if(tile){e.preventDefault();e.stopPropagation();
+    if(confirm('What should this tile show?\n\nOK = a VIDEO (auto-plays muted, on loop)\nCancel = an image')){setVideo(tile);return;}
     if(confirm('Set the tile image?\n\nOK = upload from your device\nCancel = paste an image URL')){pickImage(tile,'tile');}
     else{var img=prompt('Thumbnail image URL (leave blank to keep current):','');if(img){pushUndo();var th=tile.querySelector('.th');th.style.backgroundImage='url("'+img+'")';th.style.backgroundSize='cover';th.style.backgroundPosition='center';th.style.animation='none';saveSoon();}}
     var lk=prompt('Link this work to (URL — your YouTube/Instagram/etc):',tile.getAttribute('href')==='#'?'https://':tile.getAttribute('href'));
@@ -750,11 +756,11 @@ function renderVideo(v){var kind=v.getAttribute('data-kind'),src=v.getAttribute(
   if(en){url+='&start='+Math.floor(st)+'&end='+Math.ceil(en);}
   var f=document.createElement('iframe');f.src=url;f.setAttribute('frameborder','0');f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','video');
   v.appendChild(f);}
-function initVideos(){document.querySelectorAll('.vtile[data-kind]').forEach(renderVideo);}
+function initVideos(){document.querySelectorAll('.vtile[data-kind],.tile[data-kind]').forEach(renderVideo);}
 (function(){var kicked=false;function kick(){if(kicked)return;kicked=true;document.querySelectorAll('.vtile video').forEach(function(v){try{v.muted=true;var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}catch(e){}});}['touchstart','click','scroll','keydown'].forEach(function(ev){window.addEventListener(ev,kick,{once:true,passive:true});});if(document.readyState!=='loading')setTimeout(function(){document.querySelectorAll('.vtile video').forEach(function(v){try{v.muted=true;var p=v.play&&v.play();if(p&&p.catch)p.catch(function(){});}catch(e){}});},400);})();
 /* click an empty video slot (plain editor, no sub-mode) to set its video; prevent href jump everywhere */
 document.addEventListener('click',function(e){var vt=e.target.closest('.vtile');if(!vt)return;
-  if(!document.body.classList.contains('editor')){if(e.target.closest('a.vtile')&&!e.target.closest('iframe,video'))e.preventDefault();return;}
+  if(!document.body.classList.contains('editor')){var _m=e.target.closest('a.vtile,a.tile');if(_m&&_m.getAttribute('data-kind')&&!e.target.closest('iframe,video'))e.preventDefault();return;}
   if(document.body.classList.contains('moveedit')||document.body.classList.contains('select')||document.body.classList.contains('linkedit'))return;
   if(e.target.closest('.delx,.dragh,.vedit,.addbtn'))return;
   e.preventDefault();setVideo(vt);},false);
@@ -766,7 +772,7 @@ function setVideo(vt){if(!vt)return;
 }
 var _vp=document.getElementById('vidpick');if(_vp)_vp.addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f||!vidFor){e.target.value='';return;}var rd=new FileReader();rd.onload=function(ev){pushUndo();vidFor.setAttribute('data-kind','mp4');vidFor.setAttribute('data-src',ev.target.result);askHighlight(vidFor);renderVideo(vidFor);saveSoon();};rd.readAsDataURL(f);e.target.value='';});
 function askHighlight(vt){var hl=confirm('How should it play (always muted)?\n\nOK = just a HIGHLIGHT clip (you set start & end)\nCancel = the WHOLE video, looped');
-  if(hl){var s=prompt('Highlight START (seconds, or m:ss like 0:12):',vt.getAttribute('data-start')||'0:00');if(s===null)return;var en=prompt('Highlight END (seconds, or m:ss like 0:22):',vt.getAttribute('data-end')||'0:15');if(en===null)return;vt.setAttribute('data-start',(s||'').trim());vt.setAttribute('data-end',(en||'').trim());}
+  if(hl){var s=prompt('Highlight START time — minute:second (e.g. 1:05):',vt.getAttribute('data-start')||'0:00');if(s===null)return;var en=prompt('Highlight END time — minute:second (e.g. 1:20):',vt.getAttribute('data-end')||'0:15');if(en===null)return;vt.setAttribute('data-start',(s||'').trim());vt.setAttribute('data-end',(en||'').trim());}
   else{vt.removeAttribute('data-start');vt.removeAttribute('data-end');}}
 
 
@@ -779,8 +785,8 @@ function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
 function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx,.vedit').forEach(function(e){e.remove();});c.querySelectorAll('.vtile video,.vtile iframe').forEach(function(e){e.remove();});c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
   /* video slots: drop live players (rebuilt on load) and remove only EMPTY slots so visitors see just real videos */
-  c.querySelectorAll('.vtile iframe,.vtile video,.vtile .ytholder').forEach(function(e){e.remove();});
-  c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
+  c.querySelectorAll('.vtile iframe,.vtile video,.vtile .ytholder,.tile iframe,.tile video').forEach(function(e){e.remove();});
+  c.querySelectorAll('.vtile.hasvid,.tile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
   /* keep empty slots in the file (hidden from visitors via CSS) so they're always editable */
   c.querySelectorAll('.vtile .play').forEach(function(e){});['#selbox','#movetip','#fbar','#tour','#imgpick','#vidpick','#prevback','#ytapi'].forEach(function(s){var el=c.querySelector(s);if(el)el.remove();});c.querySelectorAll('.gline,.aguide').forEach(function(e){e.remove();});var bd=c.querySelector('body');if(bd)bd.style.paddingTop='';var sbr=c.querySelector('#sbar');if(sbr)sbr.style.top='';c.querySelectorAll('.wrap>header,.wrap>section').forEach(function(e){e.style.outline='';});var b=c.querySelector('body');if(b)b.classList.remove('editor','editing','linkedit','arrange','moveedit','preview','select');var pm=c.querySelector('#pub');if(pm)pm.classList.remove('open');return '<!DOCTYPE html>\n'+c.outerHTML;}
 async function publish(){var o=f_owner.value.trim(),re=f_repo.value.trim(),br=f_branch.value.trim()||'main',pa=f_path.value.trim()||'index.html',tk=f_token.value.trim();if(!tk){ps('Paste your token first.');return;}try{localStorage.setItem('gh_token',tk);}catch(e){}ps('Publishing…');var api='https://api.github.com/repos/'+o+'/'+re+'/contents/'+pa,sha=null;try{var g=await fetch(api+'?ref='+br,{headers:{Authorization:'Bearer '+tk}});if(g.ok)sha=(await g.json()).sha;}catch(e){}var body={message:'Update portfolio',content:u8(serialize()),branch:br};if(sha)body.sha=sha;try{var r=await fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok){ps('✓ Published! Live in about a minute.');clearDraft();}else{var tx=await r.text();ps('Error '+r.status+': '+tx.slice(0,110));}}catch(e){ps('Network error: '+e.message);}}
