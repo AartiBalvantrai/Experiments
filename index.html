@@ -868,9 +868,17 @@ function renderVideo(v){var kind=v.getAttribute('data-kind'),src=v.getAttribute(
   if(kind==='mp4'){var vid=document.createElement('video');vid.src=src;vid.autoplay=true;vid.muted=true;vid.defaultMuted=true;vid.loop=!en;vid.playsInline=true;vid.setAttribute('muted','');vid.setAttribute('playsinline','');vid.setAttribute('autoplay','');if(!en)vid.setAttribute('loop','');
     if(en){vid.addEventListener('loadedmetadata',function(){try{vid.currentTime=st;}catch(e){}});vid.addEventListener('timeupdate',function(){if(vid.currentTime>=en||vid.currentTime<st-0.3){try{vid.currentTime=st;}catch(e){}}});}
     v.appendChild(vid);addVideoControls(v);var _try=function(){var pr=vid.play&&vid.play();if(pr&&pr.catch)pr.catch(function(){});};_try();vid.addEventListener('canplay',_try,{once:true});vid.addEventListener('loadeddata',_try,{once:true});return;}
-  /* youtube: plain iframe embed, muted autoplay, looped (no external API needed) */
+  /* youtube */
+  if(en){ /* HIGHLIGHT: loop just the start..end section via the YouTube API */
+    var holder=document.createElement('div');holder.className='ytholder';v.appendChild(holder);addVideoControls(v);
+    var mk=function(){ try{ v._yt=new YT.Player(holder,{videoId:src,playerVars:{autoplay:1,mute:1,controls:0,rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,start:Math.floor(st),end:Math.ceil(en)},
+      events:{ onReady:function(e){e.target.mute();e.target.playVideo();},
+               onStateChange:function(e){ if(e.data===YT.PlayerState.ENDED){ try{e.target.seekTo(st,true);e.target.playVideo();}catch(x){} } } }}); }catch(x){} };
+    if(window.YT&&YT.Player){mk();} else { (window._ytq=window._ytq||[]).push(mk); if(!window._ytload){window._ytload=1;var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);window.onYouTubeIframeAPIReady=function(){(window._ytq||[]).forEach(function(fn){fn();});window._ytq=[];};} }
+    return;
+  }
+  /* WHOLE video: plain iframe, looped */
   var url='https://www.youtube.com/embed/'+src+'?autoplay=1&mute=1&controls=0&loop=1&playlist='+src+'&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3';
-  if(en){url+='&start='+Math.floor(st)+'&end='+Math.ceil(en);}
   var f=document.createElement('iframe');f.src=url;f.setAttribute('frameborder','0');f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');f.setAttribute('allowfullscreen','');f.setAttribute('title','video');
   v.appendChild(f);addVideoControls(v);}
 function initVideos(){document.querySelectorAll('.vtile[data-kind],.tile[data-kind]').forEach(renderVideo);}
@@ -897,7 +905,29 @@ function askHighlight(vt){var hl=confirm('How should it play (always muted)?\n\n
 /* publish */
 function openPub(){document.getElementById('pub').classList.add('open');try{var t=localStorage.getItem('gh_token');if(t)document.getElementById('f_token').value=t;}catch(e){}}
 function closePub(){document.getElementById('pub').classList.remove('open');}
-function downloadHTML(){var html=serialize();var blob=new Blob([html],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);clearDraft();}
+function downloadHTML(){
+  var html;
+  try{ html=serialize(); }catch(err){ alert('Could not prepare the file: '+err.message); return; }
+  try{
+    var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    if(window.navigator && window.navigator.msSaveOrOpenBlob){ window.navigator.msSaveOrOpenBlob(blob,'index.html'); try{clearDraft();}catch(e){} return; }
+    var urlb=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=urlb; a.download='index.html'; a.rel='noopener'; a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    // some browsers need a dispatched event
+    try{ a.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window})); }catch(e){}
+    setTimeout(function(){ try{URL.revokeObjectURL(urlb);a.remove();}catch(e){} },1500);
+    // fallback: if nothing downloaded, open the file in a new tab so the user can Save As
+    setTimeout(function(){ try{ var w=window.open(urlb,'_blank'); if(!w){ /* popup blocked */ } }catch(e){} },400);
+    try{clearDraft();}catch(e){}
+  }catch(err2){
+    // last-ditch fallback: open a data URL the user can save
+    try{ var dl='data:text/html;charset=utf-8,'+encodeURIComponent(html); window.open(dl,'_blank'); }
+    catch(e){ alert('Download was blocked by the browser. Please allow downloads/pop-ups for this site and try again.'); }
+  }
+}
 function ps(m){document.getElementById('pst').textContent=m;}
 function u8(s){return btoa(unescape(encodeURIComponent(s)));}
 function serialize(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('.ed').forEach(function(e){e.removeAttribute('contenteditable');});c.querySelectorAll('.arrangectl,.addbtn,.dragh,.delx,.vedit').forEach(function(e){e.remove();});c.querySelectorAll('.vtile video,.vtile iframe').forEach(function(e){e.remove();});c.querySelectorAll('.vtile.hasvid').forEach(function(e){e.classList.remove('hasvid');});
